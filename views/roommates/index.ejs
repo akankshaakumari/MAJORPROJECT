@@ -120,7 +120,12 @@
                         </div>
 
                         <div class="flex-grow-1 mb-4">
-                            <p class="text-muted" style="font-size: 0.95rem;">"<%= req.bio %>"</p>
+                            <p class="text-muted mb-2" style="font-size: 0.95rem;">"<%= req.bio %>"</p>
+                            <div class="d-flex flex-wrap gap-1">
+                                <% if(req.noSmoking) { %><span class="badge rounded-pill bg-light text-dark border small" title="No Smoking"><i class="fa-solid fa-ban-smoking text-danger"></i></span><% } %>
+                                <% if(req.quietHours) { %><span class="badge rounded-pill bg-light text-dark border small" title="Quiet after 11PM"><i class="fa-solid fa-moon text-primary"></i></span><% } %>
+                                <% if(req.cleanDuties) { %><span class="badge rounded-pill bg-light text-dark border small" title="Cleaning Shared"><i class="fa-solid fa-broom text-success"></i></span><% } %>
+                            </div>
                         </div>
 
                         <!-- Trigger Modal for Matches -->
@@ -145,6 +150,16 @@
                                 <div class="bg-light p-3 rounded-4 mb-4">
                                     <h6 class="text-uppercase fw-bold text-muted small mb-1">Email Address</h6>
                                     <p class="fs-5 mb-0 fw-bold text-primary"><%= req.author.email %></p>
+                                </div>
+                                
+                                <div class="bg-light p-3 rounded-4 mb-3 text-start">
+                                    <h6 class="text-uppercase fw-bold text-muted small mb-2 text-center">Roommate Rules</h6>
+                                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                                        <% if(req.noSmoking) { %><span class="badge rounded-pill bg-white text-dark border p-2 px-3"><i class="fa-solid fa-ban-smoking text-danger me-1"></i> No Smoking</span><% } %>
+                                        <% if(req.quietHours) { %><span class="badge rounded-pill bg-white text-dark border p-2 px-3"><i class="fa-solid fa-moon text-primary me-1"></i> Quiet Hours</span><% } %>
+                                        <% if(req.cleanDuties) { %><span class="badge rounded-pill bg-white text-dark border p-2 px-3"><i class="fa-solid fa-broom text-success me-1"></i> Sharing Cleaning</span><% } %>
+                                        <% if(!req.noSmoking && !req.quietHours && !req.cleanDuties) { %><span class="text-muted small">No specific rules set.</span><% } %>
+                                    </div>
                                 </div>
                                 
                                 <p class="small text-muted mb-4">"<%= req.bio %>"</p>
@@ -194,7 +209,12 @@
                         </div>
 
                         <div class="flex-grow-1 mb-4">
-                            <p class="text-muted" style="font-size: 0.95rem;">"<%= req.bio %>"</p>
+                            <p class="text-muted mb-2" style="font-size: 0.95rem;">"<%= req.bio %>"</p>
+                            <div class="d-flex flex-wrap gap-1">
+                                <% if(req.noSmoking) { %><span class="badge rounded-pill bg-light text-dark border small" title="No Smoking"><i class="fa-solid fa-ban-smoking text-danger"></i></span><% } %>
+                                <% if(req.quietHours) { %><span class="badge rounded-pill bg-light text-dark border small" title="Quiet after 11PM"><i class="fa-solid fa-moon text-primary"></i></span><% } %>
+                                <% if(req.cleanDuties) { %><span class="badge rounded-pill bg-light text-dark border small" title="Cleaning Shared"><i class="fa-solid fa-broom text-success"></i></span><% } %>
+                            </div>
                         </div>
                         
                         <% if (currUser && !currUser._id.equals(req.author._id)) { %>
@@ -220,6 +240,16 @@
                                     <div class="bg-light p-3 rounded-4 mb-4">
                                         <h6 class="text-uppercase fw-bold text-muted small mb-1">Email Address</h6>
                                         <p class="fs-5 mb-0 fw-bold text-primary"><%= req.author.email %></p>
+                                    </div>
+                                    
+                                    <div class="bg-light p-3 rounded-4 mb-3 text-start">
+                                        <h6 class="text-uppercase fw-bold text-muted small mb-2 text-center">Roommate Rules</h6>
+                                        <div class="d-flex flex-wrap justify-content-center gap-2">
+                                            <% if(req.noSmoking) { %><span class="badge rounded-pill bg-white text-dark border p-2 px-3"><i class="fa-solid fa-ban-smoking text-danger me-1"></i> No Smoking</span><% } %>
+                                            <% if(req.quietHours) { %><span class="badge rounded-pill bg-white text-dark border p-2 px-3"><i class="fa-solid fa-moon text-primary me-1"></i> Quiet Hours</span><% } %>
+                                            <% if(req.cleanDuties) { %><span class="badge rounded-pill bg-white text-dark border p-2 px-3"><i class="fa-solid fa-broom text-success me-1"></i> Sharing Cleaning</span><% } %>
+                                            <% if(!req.noSmoking && !req.quietHours && !req.cleanDuties) { %><span class="text-muted small">No specific rules set.</span><% } %>
+                                        </div>
                                     </div>
                                     
                                     <p class="small text-muted mb-4">"<%= req.bio %>"</p>

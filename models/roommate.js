@@ -40,6 +40,18 @@ const roommateSchema = new Schema({
         required: true,
         maxLength: 500
     },
+    noSmoking: {
+        type: Boolean,
+        default: false
+    },
+    quietHours: {
+        type: Boolean,
+        default: false
+    },
+    cleanDuties: {
+        type: Boolean,
+        default: false
+    },
     createdAt: {
         type: Date,
         default: Date.now

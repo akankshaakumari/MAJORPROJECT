@@ -28,6 +28,9 @@ module.exports.roommateSchema = Joi.object({
         myGender: Joi.string().valid("Male", "Female", "Other", "Prefer not to say").required(),
         prefGender: Joi.string().valid("Male", "Female", "Any").required(),
         budget: Joi.number().min(0).required(),
-        bio: Joi.string().max(500).required()
+        bio: Joi.string().max(500).required(),
+        noSmoking: Joi.boolean().default(false),
+        quietHours: Joi.boolean().default(false),
+        cleanDuties: Joi.boolean().default(false)
     }).required()
 });

@@ -98,6 +98,26 @@
                     <textarea name="roommate[bio]" placeholder="I love exploring museums and trying local foods. I am clean and quiet at night!" class="form-control" rows="4" required></textarea>
                 </div>
 
+                <div class="mb-5 p-4 rounded-4" style="background-color: #f8f9fa; border: 1px solid #eee;">
+                    <h5 class="fw-bold mb-3"><i class="fa-solid fa-handshake-angle text-primary me-2"></i> Roommate Agreement (LifeStyle)</h5>
+                    <p class="text-muted small mb-4">Select items you agree to follow to attract like-minded roommates!</p>
+                    
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="noSmoking" name="roommate[noSmoking]" value="true">
+                        <label class="form-check-label ms-2 fw-semibold" for="noSmoking">💨 No Smoking Inside</label>
+                    </div>
+                    
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="quietHours" name="roommate[quietHours]" value="true">
+                        <label class="form-check-label ms-2 fw-semibold" for="quietHours">🤫 Quiet after 11 PM</label>
+                    </div>
+                    
+                    <div class="form-check form-switch mb-0">
+                        <input class="form-check-input" type="checkbox" role="switch" id="cleanDuties" name="roommate[cleanDuties]" value="true">
+                        <label class="form-check-label ms-2 fw-semibold" for="cleanDuties">🧹 Share Cleaning Duties</label>
+                    </div>
+                </div>
+
                 <button class="btn w-100 py-3 fw-bold fs-5 text-white shadow-sm" style="background-color: #ff385c; border-radius: 12px; transition: 0.3s;" onmouseover="this.style.backgroundColor='#d90b39'" onmouseout="this.style.backgroundColor='#ff385c'">Post & Find Matches ✨</button>
             </form>
         </div>
