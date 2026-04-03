@@ -1,0 +1,86 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+    .trip-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: 0.3s;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        height: 100%;
+    }
+    .trip-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .trip-img {
+        height: 180px;
+        object-fit: cover;
+    }
+    .status-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .empty-trips {
+        padding: 80px 0;
+        text-align: center;
+        background: #f8f9fa;
+        border-radius: 20px;
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+    <h2 class="fw-bold mb-4">Trips</h2>
+
+    <% if (allBookings && allBookings.length > 0) { %>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <% for(let booking of allBookings) { %>
+                <div class="col">
+                    <div class="card trip-card position-relative">
+                        <img src="<%= booking.listing.image.url %>" class="trip-img card-img-top" alt="listing image">
+                        <div class="status-badge text-success">Confirmed ✅</div>
+                        
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold mb-1"><%= booking.listing.location %></h5>
+                            <p class="text-muted small mb-3">Hosted by <%= booking.listing.owner ? booking.listing.owner.username : "Host" %></p>
+                            
+                            <hr class="my-3 opacity-25">
+                            
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted small fw-bold text-uppercase">Dates</span>
+                                <span class="small fw-semibold"><%= new Date(booking.checkIn).toLocaleDateString('en-IN', {day: 'numeric', month: 'short'}) %> - <%= new Date(booking.checkOut).toLocaleDateString('en-IN', {day: 'numeric', month: 'short'}) %></span>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="text-muted small fw-bold text-uppercase">Total Price</span>
+                                <span class="small fw-bold text-dark">₹<%= booking.totalPrice.toLocaleString("en-IN") %></span>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <a href="/listings/<%= booking.listing._id %>" class="btn btn-outline-dark btn-sm flex-fill rounded-3 py-2 fw-bold">View Listing</a>
+                                <form method="POST" action="/bookings/<%= booking._id %>?_method=DELETE" class="flex-fill">
+                                    <button class="btn btn-outline-danger btn-sm w-100 rounded-3 py-2 fw-bold">Cancel Trip</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    <% } else { %>
+        <div class="empty-trips border border-dashed">
+            <h1 class="display-3 mb-4">🏠</h1>
+            <h3 class="fw-bold">No trips booked... yet!</h3>
+            <p class="text-muted fs-5 mb-4">Time to dust off your bags and start planning your next adventure.</p>
+            <a href="/listings" class="btn btn-outline-dark btn-lg px-5 fw-bold rounded-3">Start Searching</a>
+        </div>
+    <% } %>
+</div>

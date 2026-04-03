@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js");
 const roommates = require("./routes/roommate.js");
+const bookings = require("./routes/booking.js");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
@@ -101,6 +102,8 @@ app.get("/", (req, res) => {
 
 app.use("/listings", listings);
 app.use("/roommates", roommates);
+app.use("/listings/:id/bookings", bookings);
+app.use("/bookings", bookings);
 app.use("/listings/:id/reviews", reviews);
 app.use("/", user);
 
