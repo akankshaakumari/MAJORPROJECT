@@ -1,7 +1,5 @@
 const Listing = require("../models/listing.js");
-const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
-const mapToken = process.env.MAP_TOKEN || ("pk." + "eyJ1IjoiZmFrZSIsImEiOiJmYWtlIn0" + ".fake");
-const geocodingClient = mbxGeocoding({ accessToken: mapToken });
+// Removed Mapbox requirement and fake tokens completely
 
 module.exports.index = async (req, res) => {
     let { category, search } = req.query;
@@ -48,14 +46,16 @@ module.exports.createListing = async (req, res, next) => {
     if (mapLat && mapLng) {
         coordinates = [parseFloat(mapLng), parseFloat(mapLat)];
     } else {
-        let response = await geocodingClient.forwardGeocode({
-            query: req.body.listing.location + ", " + req.body.listing.country,
-            limit: 1
-        }).send();
-        
-        if (response.body.features.length) {
-            coordinates = response.body.features[0].geometry.coordinates;
-        } else {
+        try {
+            const query = encodeURIComponent(req.body.listing.location + ", " + req.body.listing.country);
+            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`);
+            const data = await response.json();
+            if (data && data.length > 0) {
+                coordinates = [parseFloat(data[0].lon), parseFloat(data[0].lat)];
+            } else {
+                coordinates = [77.2090, 28.6139];
+            }
+        } catch(e) {
             coordinates = [77.2090, 28.6139];
         }
     }
@@ -94,14 +94,16 @@ module.exports.updateListing = async (req, res) => {
     if (mapLat && mapLng) {
         listing.geometry = { type: 'Point', coordinates: [parseFloat(mapLng), parseFloat(mapLat)] };
     } else {
-        // Compute new coordinates
-        let response = await geocodingClient.forwardGeocode({
-            query: req.body.listing.location + ", " + req.body.listing.country,
-            limit: 1
-        }).send();
-        if (response.body.features.length) {
-            listing.geometry = response.body.features[0].geometry;
-        } else {
+        try {
+            const query = encodeURIComponent(req.body.listing.location + ", " + req.body.listing.country);
+            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`);
+            const data = await response.json();
+            if (data && data.length > 0) {
+                listing.geometry = { type: 'Point', coordinates: [parseFloat(data[0].lon), parseFloat(data[0].lat)] };
+            } else {
+                listing.geometry = { type: 'Point', coordinates: [77.2090, 28.6139] };
+            }
+        } catch (e) {
             listing.geometry = { type: 'Point', coordinates: [77.2090, 28.6139] };
         }
     }
