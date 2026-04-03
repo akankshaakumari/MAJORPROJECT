@@ -15,7 +15,12 @@ module.exports.index = async (req, res) => {
         ];
     }
     const allListings = await Listing.find(query);
-    res.render("./listings/index.ejs", { allListings, currentCategory: category });
+    let wishlistItems = [];
+    if (req.user) {
+        const user = await require("../models/user.js").findById(req.user._id);
+        wishlistItems = user.wishlist.map(id => id.toString());
+    }
+    res.render("./listings/index.ejs", { allListings, currentCategory: category, wishlistItems });
 };
 
 module.exports.renderNewForm = (req, res) => {

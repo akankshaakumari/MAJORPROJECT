@@ -17,6 +17,26 @@
     </div>
 
     <div class="navbar-nav ms-auto profile-menu-container d-flex flex-row align-items-center">
+      <!-- Notification Bell -->
+      <% if (currUser) { %>
+        <div class="nav-link position-relative me-3" id="notifBtn" style="cursor: pointer;">
+          <i class="fa-solid fa-bell fs-5 text-dark"></i>
+          <span class="position-absolute translate-middle badge rounded-pill bg-danger d-none" id="notifBadge" style="top: 10px; right: -12px;">
+            0
+          </span>
+          <div class="notification-dropdown shadow-lg d-none" id="notifDropdown">
+            <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+              <span class="fw-bold">Notifications</span>
+              <button class="btn btn-sm text-primary p-0 xsmall" id="markAllRead">Clear All</button>
+            </div>
+            <div id="notifList" class="notif-scroll">
+              <!-- Notifs will appear here -->
+              <div class="p-4 text-center text-muted small">No new notifications</div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+      
       <a href="/roommates" class="nav-link fw-bold p-2 px-3 rounded-pill me-2" style="background-color: #f7f7f7; color: #ff385c; cursor:pointer; text-decoration: none; transition: 0.2s;">Find Roommates</a>
       <a class="nav-link profile-menu-btn" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="fa-solid fa-bars"></i>
@@ -28,6 +48,7 @@
           <li><a class="dropdown-item" href="/login">Log in</a></li>
         <% } else { %>
           <li><a class="dropdown-item fw-bold text-dark" href="/bookings">My Trips 🎒</a></li>
+          <li><a class="dropdown-item fw-bold text-dark" href="/wishlist">Wishlist ❤️</a></li>
           <li><a class="dropdown-item" href="/roommates">Roommates 🌍</a></li>
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="/listings/new">Airbnb your home</a></li>

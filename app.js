@@ -9,6 +9,7 @@ const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js");
 const roommates = require("./routes/roommate.js");
 const bookings = require("./routes/booking.js");
+const wishlist = require("./routes/wishlist.js");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
@@ -103,6 +104,7 @@ app.get("/", (req, res) => {
 app.use("/listings", listings);
 app.use("/roommates", roommates);
 app.use("/listings/:id/bookings", bookings);
+app.use("/wishlist", wishlist);
 app.use("/bookings", bookings);
 app.use("/listings/:id/reviews", reviews);
 app.use("/", user);
@@ -118,6 +120,21 @@ app.use((err, req, res, next) => {
 });
 
 const port = process.env.PORT || 8080;
-app.listen(port, () => {
+const http = require("http");
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
+
+// Store IO on app for access in controllers
+app.set("io", io);
+
+io.on("connection", (socket) => {
+    // When a user connects, join a room named after their User ID
+    socket.on("join-room", (userId) => {
+        socket.join(userId);
+    });
+});
+
+server.listen(port, () => {
     console.log(`server is listening to port ${port}`);
 });

@@ -45,6 +45,26 @@ module.exports.createRequest = async (req, res) => {
         const newRequest = new Roommate(req.body.roommate);
         newRequest.author = req.user._id;
         await newRequest.save();
+
+        // Real-Time Notification: Check for matches and notify
+        const allRequests = await Roommate.find({}).populate("author");
+        const notify = require("../utils/notify.js");
+        
+        for (let otherReq of allRequests) {
+            if (otherReq.author._id.equals(req.user._id)) continue;
+
+            const isCityMatch = newRequest.city.trim().toLowerCase() === otherReq.city.trim().toLowerCase();
+            const datesOverlap = newRequest.startDate < otherReq.endDate && newRequest.endDate > otherReq.startDate;
+            const genderMatch = (newRequest.prefGender === "Any" || otherReq.myGender === newRequest.prefGender) &&
+                                (otherReq.prefGender === "Any" || newRequest.myGender === otherReq.prefGender);
+
+            if (isCityMatch && datesOverlap && genderMatch) {
+                // Notify both
+                await notify(req.app, req.user._id, `Perfect Match Found for ${newRequest.city}! ✨`, "Roommate", "/roommates");
+                await notify(req.app, otherReq.author._id, `Someone is heading to ${newRequest.city} too! ✨`, "Roommate", "/roommates");
+                break; // Notify for the first match found to avoid spam
+            }
+        }
         
         req.flash("success", "Roommate Request posted! Matchmaking initiated 🪄");
         res.redirect("/roommates");

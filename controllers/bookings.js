@@ -49,6 +49,17 @@ module.exports.createBooking = async (req, res) => {
         });
 
         await newBooking.save();
+
+        // Real-Time Notification: Send to traveler
+        const notify = require("../utils/notify.js");
+        await notify(
+            req.app, 
+            req.user._id, 
+            `Booking Confirmed for ${listing.title}! 🏨`, 
+            "Booking", 
+            "/bookings"
+        );
+
         req.flash("success", `Booking successful! Total: ₹${totalPrice.toLocaleString("en-IN")}`);
         res.redirect("/bookings");
         

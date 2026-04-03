@@ -1,0 +1,66 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-5">
+    <div class="col-12 mb-4">
+        <h2 class="fw-bold">Wishlist ❤️</h2>
+        <p class="text-muted">Your saved places for future trips.</p>
+    </div>
+
+    <% if (wishlist && wishlist.length > 0) { %>
+        <% for(let listing of wishlist){ %>
+            <div class="card col listing-card" >
+                <a href="/listings/<%= listing._id %>" class="listing_link">
+                    <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem ">
+                    <div class="card-img-overlay"></div>
+                </a>
+        
+                <form action="/wishlist/<%= listing._id %>" method="POST" class="wishlist-form">
+                    <button type="submit" class="wishlist-btn">
+                        <i class="fa-solid fa-heart" style="color: #ff385c;"></i>
+                    </button>
+                </form>
+
+                <div class="card-body">
+                    <p class="card-text">
+                        <b> <%= listing.title %> </b>
+                        <br>
+                        &#8377;<%= listing.price.toLocaleString("en-IN") %> /night
+                    </p>
+                </div>
+            </div>
+        <% } %>
+    <% } else { %>
+        <div class="col-12 text-center mt-5 py-5 bg-light rounded-5 border border-dashed">
+            <h1 class="display-1">💔</h1>
+            <h3 class="fw-bold">Your wishlist is empty</h3>
+            <p class="text-muted">Click the heart icon on any listing to save it here!</p>
+            <a href="/listings" class="btn btn-dark mt-3 px-4 py-2 rounded-pill fw-bold">Explore Listings</a>
+        </div>
+    <% } %>
+</div>
+
+<style>
+  .listing-card {
+    position: relative;
+    border: none !important;
+    margin-bottom: 2rem;
+  }
+  .wishlist-form {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    z-index: 10;
+  }
+  .wishlist-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: white;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+    transition: transform 0.2s;
+    padding: 0;
+  }
+  .wishlist-btn:hover {
+    transform: scale(1.1);
+  }
+</style>
