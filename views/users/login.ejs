@@ -1,0 +1,33 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="row mt-5">
+    <div class="col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+        <div class="card shadow" style="border-radius: 1rem;">
+            <div class="card-body p-4 p-md-5">
+                <h3 class="card-title text-center mb-4 fw-bold" style="color: #222222;">Welcome Back to WanderLust</h3>
+                <p class="text-center text-muted mb-4">Login to continue your journey</p>
+                <form action="/login" method="POST" class="needs-validation" novalidate>
+                    <div class="mb-4">
+                        <label for="username" class="form-label fw-semibold">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fa-solid fa-user text-muted"></i></span>
+                            <input type="text" id="username" name="username" class="form-control form-control-lg bg-light" placeholder="Enter username" required>
+                            <div class="invalid-feedback">Please enter your username.</div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-semibold">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fa-solid fa-lock text-muted"></i></span>
+                            <input type="password" id="password" name="password" class="form-control form-control-lg bg-light" placeholder="Enter password" required>
+                            <div class="invalid-feedback">Please enter your password.</div>
+                        </div>
+                    </div>
+                    <div class="d-grid mt-5">
+                        <button type="submit" class="btn btn-lg text-white" style="background-color: #fe424d; border-radius: 0.5rem; font-weight: 600; letter-spacing: 0.5px;">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

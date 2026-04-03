@@ -1,0 +1,36 @@
+<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/listings"><i class="fa-solid fa-compass"></i> Wanderlust</a>
+    
+    <div class="navbar-nav ms-auto search-container">
+      <form class="d-flex search-pill" role="search" action="/listings" method="GET">
+        <input
+          class="form-control search-input"
+          type="search"
+          placeholder="Search destinations"
+          name="search"
+        />
+        <button class="btn btn-search-icon" type="submit">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </form>
+    </div>
+
+    <div class="navbar-nav ms-auto profile-menu-container">
+      <a class="nav-link profile-menu-btn" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa-solid fa-bars"></i>
+        <i class="fa-solid fa-user-circle"></i>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="navbarDropdown">
+        <% if (!currUser) { %>
+          <li><a class="dropdown-item fw-semibold" href="/signup">Sign up</a></li>
+          <li><a class="dropdown-item" href="/login">Log in</a></li>
+        <% } else { %>
+          <li><a class="dropdown-item" href="/listings/new">Airbnb your home</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="/logout">Log out</a></li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>

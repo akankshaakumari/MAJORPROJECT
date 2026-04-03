@@ -1,0 +1,157 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="row justify-content-center mt-5 mb-5">
+  <div class="col-md-10 col-lg-8 col-xl-6">
+    <div class="card shadow-lg border-0 rounded-4">
+      <div class="card-body p-5">
+        <div class="text-center mb-5">
+          <div class="d-inline-block p-3 rounded-circle mb-3" style="background-color: rgba(254, 66, 77, 0.1);">
+            <i class="fa-solid fa-house-medical fa-2x" style="color: #fe424d;"></i>
+          </div>
+          <h2 class="fw-bold" style="color: #222222;">Create a New Listing</h2>
+          <p class="text-muted">Fill out the details to list your amazing property</p>
+        </div>
+
+        <form method="POST" action="/listings" enctype="multipart/form-data" novalidate class="needs-validation">
+          
+          <!-- Title -->
+          <div class="mb-4">
+            <label for="title" class="form-label fw-semibold text-dark">Listing Title <span class="text-danger">*</span></label>
+            <input 
+              name="listing[title]" 
+              id="title"
+              placeholder="E.g., Cozy Beachfront Villa" 
+              type="text"
+              class="form-control form-control-lg rounded-3 bg-light border-0 px-4 py-3"
+              required
+            />
+            <div class="valid-feedback">Looking good!</div>
+            <div class="invalid-feedback">Please provide a catchy title.</div>
+          </div>
+
+          <!-- Description -->
+          <div class="mb-4">
+            <label for="description" class="form-label fw-semibold text-dark">Description <span class="text-danger">*</span></label>
+            <textarea 
+              name="listing[description]"
+              id="description"
+              class="form-control form-control-lg rounded-3 bg-light border-0 px-4 py-3" 
+              placeholder="Describe what makes your place special..."
+              rows="4"
+              required
+            ></textarea> 
+            <div class="invalid-feedback">A short description is required.</div> 
+          </div>
+          
+          <!-- Image Upload -->
+          <div class="mb-4">
+            <label for="image" class="form-label fw-semibold text-dark">Upload Image <span class="text-danger">*</span></label> 
+            <div class="input-group">
+              <span class="input-group-text border-0 rounded-start-3 px-4" style="background-color: #f8f9fa;"><i class="fa-solid fa-cloud-arrow-up text-muted"></i></span>
+              <input 
+                name="listing[image]" 
+                id="image"
+                type="file"
+                class="form-control form-control-lg border-0 rounded-end-3 bg-light py-3"
+                required
+              />
+            </div>
+            <div class="invalid-feedback">Please upload an image for your listing.</div>
+            <div class="form-text text-muted mt-2"><i class="fa-solid fa-circle-info me-1"></i> Supported formats: JPG, PNG, JPEG</div>
+          </div>
+        
+          <div class="row g-4 mb-4">
+            <!-- Price -->
+            <div class="col-md-5">
+              <label for="price" class="form-label fw-semibold text-dark">Price per night <span class="text-danger">*</span></label> 
+              <div class="input-group">
+                <span class="input-group-text border-0 rounded-start-3 px-4 fw-bold" style="background-color: #f8f9fa;">&#8377;</span>
+                <input 
+                  name="listing[price]" 
+                  id="price"
+                  placeholder="1200" 
+                  type="number"
+                  class="form-control form-control-lg border-0 rounded-end-3 bg-light py-3"
+                  required
+                />
+              </div>
+              <div class="invalid-feedback">Please enter a valid price.</div>
+            </div>
+            
+            <!-- Country -->
+            <div class="col-md-7">
+              <label for="country" class="form-label fw-semibold text-dark">Country <span class="text-danger">*</span></label> 
+              <div class="input-group">
+                <span class="input-group-text border-0 rounded-start-3 px-4" style="background-color: #f8f9fa;"><i class="fa-solid fa-globe text-muted"></i></span>
+                <input 
+                  name="listing[country]" 
+                  id="country"
+                  placeholder="E.g., India" 
+                  type="text"
+                  class="form-control form-control-lg border-0 rounded-end-3 bg-light py-3"
+                  required
+                />
+              </div>
+              <div class="invalid-feedback">Country should be valid.</div>
+            </div>
+          </div>
+          
+          <!-- Location -->
+          <div class="mb-4">
+            <label for="location" class="form-label fw-semibold text-dark">Location <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text border-0 rounded-start-3 px-4" style="background-color: #f8f9fa;"><i class="fa-solid fa-map-pin text-muted"></i></span>
+              <input 
+                name="listing[location]" 
+                id="location"
+                placeholder="E.g., Jaipur, Rajasthan" 
+                type="text"
+                class="form-control form-control-lg border-0 rounded-end-3 bg-light py-3"
+                required
+              />
+            </div>
+            <div class="invalid-feedback">Location should be valid.</div>
+          </div>
+
+          <!-- Interactive Map -->
+          <div class="mb-5">
+            <label class="form-label fw-semibold text-dark">Mark precise location on Map (Optional)</label>
+            <div id="interactive-map" style="height: 350px; width: 100%; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border: 2px solid #f4f6f8;"></div>
+            <p class="form-text text-muted mt-2"><i class="fa-solid fa-hand-pointer me-1"></i> Click anywhere on the map to drop a pin. You can also drag the pin!</p>
+            <input type="hidden" name="listing[lat]" id="lat">
+            <input type="hidden" name="listing[lng]" id="lng">
+          </div>
+          
+          <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+          <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+          <script src="/js/new-map.js"></script>
+          
+          <div class="d-grid">
+            <button class="btn add-btn btn-lg rounded-pill text-white fw-bold shadow-sm py-3" type="submit" style="background-color: #fe424d; border: none; transition: transform 0.2s, box-shadow 0.2s;">
+              <i class="fa-solid fa-plus-circle me-2"></i> Add Listing
+            </button>
+          </div>
+        
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .bg-light {
+    background-color: #f4f6f8 !important;
+  }
+  .form-control:focus, .input-group-text:focus-within {
+    box-shadow: 0 0 0 0.25rem rgba(254, 66, 77, 0.15) !important;
+    background-color: #fff !important;
+  }
+  .form-control:focus {
+    outline: 2px solid rgba(254, 66, 77, 0.5);
+  }
+  .add-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(254, 66, 77, 0.3) !important;
+    background-color: #e63946 !important;
+  }
+</style>

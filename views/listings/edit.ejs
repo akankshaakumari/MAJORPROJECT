@@ -1,0 +1,122 @@
+<% layout("/layouts/boilerplate" )%>
+<div class="row mt-3">
+    <div class="col-8 offset-2">
+
+    <h3>Edit your listing</h3>
+    <form method="POST" action ="/listings/<%= listing._id %>?_method=PUT" enctype="multipart/form-data" novalidate
+        class="needs-validation">
+        <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input 
+        name="listing[title]" 
+        value="<%= listing.title %>" 
+        type="text" 
+        class="form-control"
+        required />
+        <div class="valid-feedback">Title looks good</div>
+        </div>
+        
+        <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea 
+        name="listing[description]" 
+        class="form-control" required> <%= listing.description %>
+       </textarea>
+       <div class="invalid-feedback">Please enter a short description</div> 
+        </div>
+
+        <div class="mb-3">
+         <p>Original Image Preview</p>
+         <img src="<%= listing.image.url %>" alt="listing_image" style="height: 150px; border-radius: 10px; margin-bottom: 20px;">
+        </div>
+
+       <div class="mb-3">
+         <label for="image" class="form-label">Upload New Image</label> 
+         <input
+          name="listing[image]" 
+          id="imageInput"
+          type="file" 
+          class="form-control"
+         >
+         <div id="newImagePreviewContainer" style="display: none; margin-top: 15px;">
+           <p>New Image Preview</p>
+           <img id="newImagePreview" src="" alt="new_listing_image" style="height: 150px; border-radius: 10px; margin-bottom: 20px;">
+         </div>
+       </div>
+
+       <script>
+         const imageInput = document.getElementById('imageInput');
+         const newImagePreviewContainer = document.getElementById('newImagePreviewContainer');
+         const newImagePreview = document.getElementById('newImagePreview');
+
+         imageInput.addEventListener('change', function(event) {
+           const file = event.target.files[0];
+           if (file) {
+             const reader = new FileReader();
+             reader.onload = function(e) {
+               newImagePreview.src = e.target.result;
+               newImagePreviewContainer.style.display = 'block';
+             }
+             reader.readAsDataURL(file);
+           } else {
+             newImagePreview.src = '';
+             newImagePreviewContainer.style.display = 'none';
+           }
+         });
+       </script>
+        
+        <div class="row">
+        <div class="mb-3 col-md-4">
+        <label for="price" class="form-label">Price</label> 
+        <input 
+        name="listing[price]" 
+        value="<%= listing.price %>" 
+        type="number"
+        class="form-control"
+        required/>
+        <div class="invalid-feedback">Please Enter a Valid Price</div>
+        </div>
+        
+        <div class="mb-3 col-md-8">
+         <label for="country" class="form-label">Country</label> 
+        <input 
+        name="listing[country]" 
+        value="<%= listing.country %>" 
+        type="text"
+        class="form-control"
+        required/>
+        <div class="invalid-feedback">Country should be valid</div>
+        </div>
+        </div>
+        
+        <div class="mb-3">
+        <label for="location" class="form-label">Location</label>
+        <input 
+        name="listing[location]" 
+        value="<%= listing.location %>" 
+        type="text"
+        class="form-control"
+        required />
+        <div class="invalid-feedback">Location should be valid</div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Update exact location on Map</label>
+          <div id="interactive-map" style="height: 350px; width: 100%; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"></div>
+          <p class="form-text text-muted mt-2"><i class="fa-solid fa-hand-pointer me-1"></i> Drag the pin to update the exact listing coordinates!</p>
+          <input type="hidden" name="listing[lat]" id="lat">
+          <input type="hidden" name="listing[lng]" id="lng">
+        </div>
+        
+        <script>
+          let existingCoords = <%- listing.geometry && listing.geometry.coordinates ? JSON.stringify(listing.geometry.coordinates) : '[]' %>;
+        </script>
+        <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+        <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+        <script src="/js/new-map.js"></script>
+        
+        <button class="btn btn-dark edit-btn mt-3">Edit</button>
+    </form>
+ </div>
+</div>
+<script src="/js/script.js"></script>

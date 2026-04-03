@@ -1,0 +1,176 @@
+<% layout("/layouts/boilerplate") %>
+<body>
+    <style>
+      #filters {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        overflow-x: auto;
+        padding: 0.5rem 0;
+        background-color: #fff;
+        position: sticky;
+        top: 5rem; /* Matches navbar height */
+        z-index: 10;
+        border-bottom: 1px solid #eee;
+      }
+
+      #filters::-webkit-scrollbar {
+        display: none;
+      }
+
+      .filter {
+        text-align: center;
+        margin-right: 2rem;
+        opacity: 0.7;
+        transition: 0.2s;
+        min-width: 5rem;
+        padding: 0.5rem 0;
+      }
+
+      .filter:hover {
+        opacity: 1;
+        cursor: pointer;
+        border-bottom: 2px solid #000;
+      }
+
+      .active-filter {
+        opacity: 1 !important;
+        border-bottom: 2px solid #000;
+      }
+
+      .filter i {
+        font-size: 1.25rem;
+      }
+
+      .filter p {
+        font-size: 0.75rem;
+        margin: 0.25rem 0 0 0;
+        font-weight: 500;
+      }
+
+      .tax-info {
+        display: none;
+      }
+
+      .tax-toggle {
+        border: 1px solid #ddd;
+        border-radius: 0.75rem;
+        height: 3rem;
+        padding: 0.75rem 1rem;
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        background-color: #fff;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+      
+      @media (max-width: 992px) {
+        #filters {
+            flex-wrap: wrap;
+            position: relative;
+            top: 0;
+        }
+        .tax-toggle {
+            margin-left: 0;
+            margin-top: 0.5rem;
+            width: 100%;
+        }
+      }
+    </style>
+
+    <div id="filters">
+      <div class="filter <%= currentCategory === 'Trending' ? 'active-filter' : '' %>" onclick="window.location.href='/listings?category=Trending'">
+        <div><i class="fa-solid fa-fire"></i></div>
+        <p>Trending</p>
+      </div>
+      <div class="filter <%= currentCategory === 'Rooms' ? 'active-filter' : '' %>" onclick="window.location.href='/listings?category=Rooms'">
+        <div><i class="fa-solid fa-bed"></i></div>
+        <p>Rooms</p>
+      </div>
+      <div class="filter <%= currentCategory === 'Iconic Cities' ? 'active-filter' : '' %>" onclick="window.location.href='/listings?category=Iconic Cities'">
+        <div><i class="fa-solid fa-mountain-city"></i></div>
+        <p>Iconic Cities</p>
+      </div>
+      <div class="filter <%= currentCategory === 'Mountains' ? 'active-filter' : '' %>" onclick="window.location.href='/listings?category=Mountains'">
+        <div><i class="fa-solid fa-mountain"></i></div>
+        <p>Mountains</p>
+      </div>
+      <div class="filter <%= currentCategory === 'Castles' ? 'active-filter' : '' %>" onclick="window.location.href='/listings?category=Castles'">
+        <div><i class="fa-brands fa-fort-awesome"></i></div>
+        <p>Castles</p>
+      </div>
+      <div class="filter <%= currentCategory === 'Amazing Pools' ? 'active-filter' : '' %>" onclick="window.location.href='/listings?category=Amazing Pools'">
+        <div><i class="fa-solid fa-person-swimming"></i></div>
+        <p>Amazing Pools</p>
+      </div>
+      <div class="filter <%= currentCategory === 'Camping' ? 'active-filter' : '' %>" onclick="window.location.href='/listings?category=Camping'">
+        <div><i class="fa-solid fa-campground"></i></div>
+        <p>Camping</p>
+      </div>
+      <div class="filter <%= currentCategory === 'Farms' ? 'active-filter' : '' %>" onclick="window.location.href='/listings?category=Farms'">
+        <div><i class="fa-solid fa-cow"></i></div>
+        <p>Farms</p>
+      </div>
+      <div class="filter <%= currentCategory === 'Arctic' ? 'active-filter' : '' %>" onclick="window.location.href='/listings?category=Arctic'">
+        <div><i class="fa-solid fa-snowflake"></i></div>
+        <p>Arctic</p>
+      </div>
+      <div class="filter <%= currentCategory === 'Domes' ? 'active-filter' : '' %>" onclick="window.location.href='/listings?category=Domes'">
+        <div><i class="fa-solid fa-igloo"></i></div>
+        <p>Domes</p>
+      </div>
+      <div class="filter <%= currentCategory === 'Boats' ? 'active-filter' : '' %>" onclick="window.location.href='/listings?category=Boats'">
+        <div><i class="fa-solid fa-ship"></i></div>
+        <p>Boats</p>
+      </div>
+
+      <div class="tax-toggle">
+        <div class="form-check-reverse form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            id="flexSwitchCheckDefault"
+          />
+          <label class="form-check-label" for="flexSwitchCheckDefault"
+            >Display total after taxes</label
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+  <% for(let listing of allListings){ %>
+    <a href="/listings/<%= listing._id %>" class="listing_link">
+  <div class="card col" >
+    <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem ">
+    <div class="card-img-overlay"></div>
+    <div class="card-body">
+      <p class="card-text">
+       <b> <%= listing.title %> </b>
+      <br>
+       &#8377;<%= listing.price.toLocaleString("en-IN") %> /night
+       <i class="tax-info">&nbsp; &nbsp;+18% GST</i>
+    </p>
+    </div>
+  </div>
+  </a>
+<% } %>
+</div>
+
+<script>
+  let taxSwitch = document.getElementById("flexSwitchCheckDefault");
+  taxSwitch.addEventListener("click", () => {
+    let taxInfo = document.getElementsByClassName("tax-info");
+    for (info of taxInfo) {
+      if (info.style.display != "inline") {
+        info.style.display = "inline";
+      } else {
+        info.style.display = "none";
+      }
+    }
+  });
+</script>
+</body>
