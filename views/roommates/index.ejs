@@ -65,17 +65,32 @@
         background-color: #000;
         color: white;
     }
+    @keyframes pulse-red {
+        0% { box-shadow: 0 0 0 0 rgba(255, 56, 92, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(255, 56, 92, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(255, 56, 92, 0); }
+    }
+    .match-pulsing {
+        animation: pulse-red 2s infinite;
+    }
+    .empty-state {
+        padding: 5rem 2rem;
+        background: #f8f9fa;
+        border-radius: 24px;
+        text-align: center;
+        border: 2px dashed #dee2e6;
+    }
 </style>
 
 <div class="container mt-5 mb-5">
     
-    <div class="d-flex justify-content-between align-items-center mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
         <div>
             <h1 class="fw-bold mb-1">Travel Mates</h1>
             <p class="text-muted fs-5">Find someone to explore the world and split costs with.</p>
         </div>
         <div>
-            <a href="/roommates/new" class="btn btn-lg fw-bold text-white shadow-sm" style="background-color: #ff385c; border-radius: 12px;">+ Post Travel Plan</a>
+            <a href="/roommates/new" class="btn btn-lg fw-bold text-white shadow-sm" style="background-color: #ff385c; border-radius: 12px; padding: 12px 25px;">+ Post Travel Plan</a>
         </div>
     </div>
 
@@ -84,7 +99,7 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
             <% for(let req of matches) { %>
                 <div class="col">
-                    <div class="glass-card match-card p-4 position-relative">
+                    <div class="glass-card match-card match-pulsing p-4 position-relative">
                         <div class="match-badge">IT'S A MATCH! ✨</div>
                         
                         <div class="d-flex align-items-center mb-3">
@@ -117,44 +132,65 @@
     <% } %>
 
     <h3 class="fw-bold mb-4">🌎 All Travelers</h3>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        <% for(let req of allRequests) { %>
-            <div class="col">
-                <div class="glass-card p-4">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <div class="d-flex align-items-center">
-                            <div class="profile-circle me-3" style="background: linear-gradient(135deg, #e9ecef 0%, #ced4da 100%); color: #495057;">
-                                <%= req.author.email.charAt(0).toUpperCase() %>
+    <% if (allRequests && allRequests.length > 0) { %>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <% for(let req of allRequests) { %>
+                <div class="col">
+                    <div class="glass-card p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="profile-circle me-3" style="background: linear-gradient(135deg, #e9ecef 0%, #ced4da 100%); color: #495057;">
+                                    <%= req.author.email.charAt(0).toUpperCase() %>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold mb-0 text-dark"><%= req.author.email.split('@')[0] %></h5>
+                                    <small class="text-muted"><%= req.myGender %></small>
+                                </div>
                             </div>
-                            <div>
-                                <h5 class="fw-bold mb-0 text-dark"><%= req.author.email.split('@')[0] %></h5>
-                                <small class="text-muted"><%= req.myGender %></small>
-                            </div>
+                            <% if (currUser && currUser._id.equals(req.author._id)) { %>
+                                <form method="POST" action="/roommates/<%= req._id %>?_method=DELETE" class="m-0">
+                                    <button class="btn btn-sm text-danger border-0"><i class="fa-solid fa-trash"></i></button>
+                                </form>
+                            <% } %>
                         </div>
-                        <% if (currUser && currUser._id.equals(req.author._id)) { %>
-                            <form method="POST" action="/roommates/<%= req._id %>?_method=DELETE" class="m-0">
-                                <button class="btn btn-sm text-danger border-0"><i class="fa-solid fa-trash"></i></button>
-                            </form>
+
+                        <div class="mb-3">
+                            <h4 class="fw-bold mb-2">📍 <%= req.city %></h4>
+                            <div class="detail-tag"><i class="fa-regular fa-calendar"></i> <%= req.startDate.toLocaleDateString() %> - <%= req.endDate.toLocaleDateString() %></div>
+                            <div class="detail-tag"><i class="fa-solid fa-wallet"></i> Max &#8377;<%= req.budget %>/night</div>
+                        </div>
+
+                        <div class="flex-grow-1 mb-4">
+                            <p class="text-muted" style="font-size: 0.95rem;">"<%= req.bio %>"</p>
+                        </div>
+                        
+                        <% if (currUser && !currUser._id.equals(req.author._id)) { %>
+                            <a href="mailto:<%= req.author.email %>?subject=Wanderlust: Interested in sharing a stay in <%= req.city %>!" class="btn action-btn w-100 py-2 fw-bold">Contact</a>
+                        <% } else if (!currUser) { %>
+                            <a href="/login" class="btn btn-outline-dark w-100 py-2 fw-bold">Log in to Contact</a>
                         <% } %>
                     </div>
+                </div>
+            <% } %>
+        </div>
+    <% } else { %>
+        <div class="empty-state">
+            <h1 class="display-1 mb-4">🌍</h1>
+            <h2 class="fw-bold">No travel plans yet</h2>
+            <p class="text-muted fs-5 mb-4">Be the first to post a plan and find a roommate!</p>
+            <a href="/roommates/new" class="btn btn-lg fw-bold text-white shadow-sm" style="background-color: #ff385c; border-radius: 12px; padding: 12px 30px;">Get Started</a>
+        </div>
+    <% } %>
 
-                    <div class="mb-3">
-                        <h4 class="fw-bold mb-2">📍 <%= req.city %></h4>
-                        <div class="detail-tag"><i class="fa-regular fa-calendar"></i> <%= req.startDate.toLocaleDateString() %> - <%= req.endDate.toLocaleDateString() %></div>
-                        <div class="detail-tag"><i class="fa-solid fa-wallet"></i> Max &#8377;<%= req.budget %>/night</div>
-                    </div>
-
-                    <div class="flex-grow-1 mb-4">
-                        <p class="text-muted" style="font-size: 0.95rem;">"<%= req.bio %>"</p>
-                    </div>
-                    
-                    <% if (currUser && !currUser._id.equals(req.author._id)) { %>
-                        <a href="mailto:<%= req.author.email %>?subject=Wanderlust: Interested in sharing a stay in <%= req.city %>!" class="btn action-btn w-100 py-2 fw-bold">Contact</a>
-                    <% } else if (!currUser) { %>
-                        <a href="/login" class="btn btn-outline-dark w-100 py-2 fw-bold">Log in to Contact</a>
-                    <% } %>
+    <% if (currUser && myRequests.length === 0 && allRequests.length > 0) { %>
+        <div class="alert alert-info mt-5 p-4 border-0 shadow-sm rounded-4" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fa-solid fa-wand-magic-sparkles fs-3 me-3 text-primary"></i>
+                <div>
+                   <h5 class="alert-heading fw-bold mb-1">Want to find matches?</h5>
+                   <p class="mb-0">Post your own travel plan to see fellow travelers who are heading to the same city on your dates!</p>
                 </div>
             </div>
-        <% } %>
-    </div>
+        </div>
+    <% } %>
 </div>
