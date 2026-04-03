@@ -94,7 +94,7 @@ app.get("/demouser", async(req, res) => {
 
 
 app.get("/", (req, res) => {
-    res.send("hi i am root");
+    res.redirect("/listings");
 });
 
 
