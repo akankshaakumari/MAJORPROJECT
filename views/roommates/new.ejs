@@ -1,0 +1,105 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.07);
+        border-radius: 20px;
+    }
+    .form-control, .form-select {
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #ff385c;
+        box-shadow: 0 0 0 0.2rem rgba(255, 56, 92, 0.15);
+    }
+    .hero-bg {
+        background: linear-gradient(135deg, #fcebb6 0%, #f08389 100%);
+        padding: 3rem 0;
+        border-radius: 25px;
+        margin-bottom: -50px;
+        box-shadow: 0 10px 20px rgba(240, 131, 137, 0.2);
+    }
+    .form-label {
+        color: #4a4a4a;
+        font-size: 0.95rem;
+    }
+</style>
+
+<div class="container mt-4 mb-5">
+    <div class="row align-items-center hero-bg text-white mx-1">
+        <div class="col-10 col-md-8 offset-md-2 offset-1 text-center">
+            <h1 class="fw-bold fs-1 mb-2">Find a Perfect Travel Mate 🌍</h1>
+            <p class="fs-5 opacity-75">Connect with other travelers and split the cost of amazing stays!</p>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-10 col-md-8 offset-md-2 offset-1 glass-card p-4 p-md-5 mt-4">
+            <h3 class="mb-4 fw-bold" style="color: #222;">Your Travel Plans</h3>
+            <form action="/roommates" method="POST" class="needs-validation" novalidate>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="city" class="form-label fw-bold">Destination City</label>
+                        <input type="text" name="roommate[city]" placeholder="e.g. Paris or Mumbai" class="form-control" required />
+                        <div class="invalid-feedback">Please provide a valid city.</div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="startDate" class="form-label fw-bold">Check-in Date</label>
+                        <input type="date" name="roommate[startDate]" class="form-control" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="endDate" class="form-label fw-bold">Check-out Date</label>
+                        <input type="date" name="roommate[endDate]" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label for="budget" class="form-label fw-bold">Your Max Shared Budget / Night</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 px-3 fw-bold" style="border-top-left-radius: 12px; border-bottom-left-radius: 12px;">&#8377;</span>
+                            <input type="number" name="roommate[budget]" placeholder="1500" class="form-control border-start-0 ps-0" style="border-top-right-radius: 12px; border-bottom-right-radius: 12px;" required min="0" />
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label for="myGender" class="form-label fw-bold">Your Gender</label>
+                        <select name="roommate[myGender]" class="form-select" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                            <option value="Prefer not to say">Prefer not to say</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <label for="prefGender" class="form-label fw-bold">Preferred Roommate Gender</label>
+                        <select name="roommate[prefGender]" class="form-select" required>
+                            <option value="Any" selected>Any Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="bio" class="form-label fw-bold">A bit about yourself</label>
+                    <textarea name="roommate[bio]" placeholder="I love exploring museums and trying local foods. I am clean and quiet at night!" class="form-control" rows="4" required></textarea>
+                </div>
+
+                <button class="btn w-100 py-3 fw-bold fs-5 text-white shadow-sm" style="background-color: #ff385c; border-radius: 12px; transition: 0.3s;" onmouseover="this.style.backgroundColor='#d90b39'" onmouseout="this.style.backgroundColor='#ff385c'">Post & Find Matches ✨</button>
+            </form>
+        </div>
+    </div>
+</div>

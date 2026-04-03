@@ -1,5 +1,15 @@
-const { listingSchema, reviewSchema } = require("./schema.js");
+const { listingSchema, reviewSchema, roommateSchema } = require("./schema.js");
 const ExpressError = require("./utils/ExpressError.js");
+
+module.exports.validateRoommate = (req, res, next) => {
+    let { error } = roommateSchema.validate(req.body);
+    if (error) {
+        let errMsg = error.details.map((el) => el.message).join(",");
+        throw new ExpressError(400, errMsg);
+    } else {
+        next();
+    }
+};
 
 module.exports.validateListing = (req, res, next) => {
     let { error } = listingSchema.validate(req.body);

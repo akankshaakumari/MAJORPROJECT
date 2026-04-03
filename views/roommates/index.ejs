@@ -1,0 +1,160 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        transition: transform 0.2s, box-shadow 0.2s;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .match-card {
+        border: 2px solid #ff385c;
+        background: linear-gradient(180deg, #fffafa 0%, #ffffff 100%);
+    }
+    .match-badge {
+        position: absolute;
+        top: -12px;
+        right: 20px;
+        background-color: #ff385c;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(255, 56, 92, 0.3);
+    }
+    .profile-circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #fcebb6 0%, #f08389 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    .detail-tag {
+        background-color: #f1f3f5;
+        color: #495057;
+        padding: 4px 10px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+    .action-btn {
+        background-color: #222;
+        color: white;
+        border-radius: 8px;
+        transition: 0.2s;
+    }
+    .action-btn:hover {
+        background-color: #000;
+        color: white;
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+    
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="fw-bold mb-1">Travel Mates</h1>
+            <p class="text-muted fs-5">Find someone to explore the world and split costs with.</p>
+        </div>
+        <div>
+            <a href="/roommates/new" class="btn btn-lg fw-bold text-white shadow-sm" style="background-color: #ff385c; border-radius: 12px;">+ Post Travel Plan</a>
+        </div>
+    </div>
+
+    <% if (matches && matches.length > 0) { %>
+        <h3 class="fw-bold mb-4">✨ Your Perfect Matches</h3>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+            <% for(let req of matches) { %>
+                <div class="col">
+                    <div class="glass-card match-card p-4 position-relative">
+                        <div class="match-badge">IT'S A MATCH! ✨</div>
+                        
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="profile-circle me-3">
+                                <%= req.author.email.charAt(0).toUpperCase() %>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-0"><%= req.author.email.split('@')[0] %></h5>
+                                <small class="text-muted"><%= req.myGender %></small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <h4 class="fw-bold mb-2">📍 <%= req.city %></h4>
+                            <div class="detail-tag"><i class="fa-regular fa-calendar"></i> <%= req.startDate.toLocaleDateString() %> - <%= req.endDate.toLocaleDateString() %></div>
+                            <div class="detail-tag"><i class="fa-solid fa-wallet"></i> Max &#8377;<%= req.budget %>/night</div>
+                            <div class="detail-tag"><i class="fa-solid fa-user-group"></i> Wants: <%= req.prefGender %></div>
+                        </div>
+
+                        <div class="flex-grow-1 mb-4">
+                            <p class="text-muted" style="font-size: 0.95rem;">"<%= req.bio %>"</p>
+                        </div>
+
+                        <a href="mailto:<%= req.author.email %>?subject=Wanderlust Match: Traveling to <%= req.city %>!" class="btn action-btn w-100 py-2 fw-bold">Contact <%= req.author.email.split('@')[0] %></a>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+        <hr class="mb-5 border-secondary opacity-25">
+    <% } %>
+
+    <h3 class="fw-bold mb-4">🌎 All Travelers</h3>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <% for(let req of allRequests) { %>
+            <div class="col">
+                <div class="glass-card p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="profile-circle me-3" style="background: linear-gradient(135deg, #e9ecef 0%, #ced4da 100%); color: #495057;">
+                                <%= req.author.email.charAt(0).toUpperCase() %>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-0 text-dark"><%= req.author.email.split('@')[0] %></h5>
+                                <small class="text-muted"><%= req.myGender %></small>
+                            </div>
+                        </div>
+                        <% if (currUser && currUser._id.equals(req.author._id)) { %>
+                            <form method="POST" action="/roommates/<%= req._id %>?_method=DELETE" class="m-0">
+                                <button class="btn btn-sm text-danger border-0"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        <% } %>
+                    </div>
+
+                    <div class="mb-3">
+                        <h4 class="fw-bold mb-2">📍 <%= req.city %></h4>
+                        <div class="detail-tag"><i class="fa-regular fa-calendar"></i> <%= req.startDate.toLocaleDateString() %> - <%= req.endDate.toLocaleDateString() %></div>
+                        <div class="detail-tag"><i class="fa-solid fa-wallet"></i> Max &#8377;<%= req.budget %>/night</div>
+                    </div>
+
+                    <div class="flex-grow-1 mb-4">
+                        <p class="text-muted" style="font-size: 0.95rem;">"<%= req.bio %>"</p>
+                    </div>
+                    
+                    <% if (currUser && !currUser._id.equals(req.author._id)) { %>
+                        <a href="mailto:<%= req.author.email %>?subject=Wanderlust: Interested in sharing a stay in <%= req.city %>!" class="btn action-btn w-100 py-2 fw-bold">Contact</a>
+                    <% } else if (!currUser) { %>
+                        <a href="/login" class="btn btn-outline-dark w-100 py-2 fw-bold">Log in to Contact</a>
+                    <% } %>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>

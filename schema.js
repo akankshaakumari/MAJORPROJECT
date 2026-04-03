@@ -19,3 +19,15 @@ module.exports.reviewSchema = Joi.object({
         comment: Joi.string().required(),
     }).required()
 });
+
+module.exports.roommateSchema = Joi.object({
+    roommate: Joi.object({
+        city: Joi.string().required(),
+        startDate: Joi.date().required(),
+        endDate: Joi.date().min(Joi.ref('startDate')).required(),
+        myGender: Joi.string().valid("Male", "Female", "Other", "Prefer not to say").required(),
+        prefGender: Joi.string().valid("Male", "Female", "Any").required(),
+        budget: Joi.number().min(0).required(),
+        bio: Joi.string().max(500).required()
+    }).required()
+});
