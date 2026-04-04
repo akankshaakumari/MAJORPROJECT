@@ -22,4 +22,16 @@ router.route("/login")
 
 router.get("/logout", userController.logout);
 
+// Forgot Password Routes
+router.route("/forgot-password")
+    .get(userController.renderForgotPasswordForm)
+    .post(wrapAsync(userController.forgotPassword));
+
+router.route("/verify-otp")
+    .get(userController.renderVerifyOTPForm)
+    .post(wrapAsync(userController.verifyOTP));
+
+router.route("/reset-password")
+    .post(wrapAsync(userController.resetPassword));
+
 module.exports = router;

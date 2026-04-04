@@ -50,7 +50,9 @@ const userSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: "Listing"
     }
-  ]
+  ],
+  resetPasswordOTP: String,
+  resetPasswordExpires: Date
 });
 
 userSchema.plugin(plugin);

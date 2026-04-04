@@ -1,0 +1,66 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+    .otp-container {
+        max-width: 460px;
+        margin: 6rem auto;
+    }
+    .otp-card {
+        border-radius: 1.5rem;
+        border: 1px solid #ebebeb;
+    }
+    .otp-input {
+        letter-spacing: 1.5rem;
+        text-align: center;
+        padding-left: 2rem;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #fe424d;
+    }
+</style>
+
+<div class="otp-container px-3">
+    <div class="card otp-card shadow-sm">
+        <div class="card-body p-4 p-md-5">
+            <div class="text-center mb-5">
+                <i class="fa-solid fa-shield-halved fs-1 text-primary mb-3"></i>
+                <h3 class="fw-bold mb-1">Verify OTP</h3>
+                <p class="text-secondary small">We've sent a 6-digit code to <strong><%= email %></strong></p>
+            </div>
+
+            <form action="/verify-otp" method="POST" class="needs-validation" novalidate>
+                <input type="hidden" name="email" value="<%= email %>">
+                
+                <div class="mb-4">
+                    <label for="otp" class="form-label fw-bold small text-secondary">ENTER 6-DIGIT CODE</label>
+                    <input type="text" id="otp" name="otp" maxlength="6" class="form-control rounded-3 border bg-light py-3 mb-2 otp-input shadow-none" placeholder="000000" required>
+                    <div class="text-end">
+                        <span id="countdown" class="text-muted xsmall fw-bold">Expires in: 10:00</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-lg w-100 text-white border-0 shadow-sm py-3" style="background: linear-gradient(135deg, #FF385C 0%, #BD1E59 100%); border-radius: 0.75rem; font-weight: 700; letter-spacing: 1px;">VERIFY CODE</button>
+
+                <p class="text-center mt-4 text-muted small">Didn't receive code? <a href="/forgot-password" class="text-primary text-decoration-none fw-bold">Resend</a></p>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let timeLeft = 600;
+    const countdownEl = document.getElementById('countdown');
+    
+    const timer = setInterval(() => {
+        if(timeLeft <= 0) {
+            clearInterval(timer);
+            countdownEl.innerHTML = "Code expired!";
+            countdownEl.classList.add('text-danger');
+        } else {
+            let mins = Math.floor(timeLeft / 60);
+            let secs = timeLeft % 60;
+            countdownEl.innerHTML = `Expires in: ${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            timeLeft--;
+        }
+    }, 1000);
+</script>
