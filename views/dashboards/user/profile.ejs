@@ -1,0 +1,167 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4">
+    <!-- Profile Completion Tracking Sidebar -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+            <div class="text-center mb-5 mt-4">
+                <div class="position-relative d-inline-block mb-3">
+                    <% if (userProfile.profile && userProfile.profile.profileImage && userProfile.profile.profileImage.url) { %>
+                        <img src="<%= userProfile.profile.profileImage.url %>" class="rounded-circle shadow-sm" style="width: 100px; height: 100px; object-fit: cover; border: 4px solid #fff;">
+                    <% } else { %>
+                        <div class="bg-primary rounded-circle" style="width: 100px; height: 100px;"></div>
+                    <% } %>
+                    <label for="profileImageInput" class="position-absolute bottom-0 end-0 bg-white rounded-circle p-2 shadow-sm border" style="cursor: pointer;"><i class="fa-solid fa-camera text-primary"></i></label>
+                </div>
+                <h5 class="fw-bold mb-1"><%= currUser.username %></h5>
+                <p class="text-muted small mb-4"><%= currUser.email %></p>
+                
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between xsmall fw-bold mb-2">
+                        <span class="text-muted text-uppercase">Profile Completion</span>
+                        <span class="text-primary">75%</span>
+                    </div>
+                    <div class="progress" style="height: 10px; border-radius: 10px;">
+                        <div class="progress-bar" style="width: 75%; background: #fe424d;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav flex-column nav-pills gap-2" id="profileTabs" role="tablist">
+                <button class="nav-link active text-start rounded-4 py-3 fw-bold border-0 shadow-none px-4" id="v-personal-tab" data-bs-toggle="pill" data-bs-target="#v-personal" type="button"><i class="fa-solid fa-user-pen me-3"></i> Personal Info</button>
+                <button class="nav-link text-start rounded-4 py-3 fw-bold border-0 shadow-none px-4" id="v-security-tab" data-bs-toggle="pill" data-bs-target="#v-security" type="button"><i class="fa-solid fa-shield-halved me-3"></i> Verification Hub</button>
+                <button class="nav-link text-start rounded-4 py-3 fw-bold border-0 shadow-none px-4" id="v-prefs-tab" data-bs-toggle="pill" data-bs-target="#v-prefs" type="button"><i class="fa-solid fa-sliders me-3"></i> Travel Preferences</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Panel Content -->
+    <div class="col-md-8">
+        <div class="tab-content" id="v-pills-tabContent">
+            <!-- Personal Info Pane -->
+            <div class="tab-pane fade show active h-100" id="v-personal" role="tabpanel">
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 h-100 bg-white">
+                    <h5 class="fw-bold mb-4">Edit Personal Details</h5>
+                    <form action="/dashboard/user/profile" method="POST" enctype="multipart/form-data">
+                        <input type="file" id="profileImageInput" name="profileImage" class="d-none" onchange="previewImage(this)">
+                        <div class="row g-4 mb-5">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted">LEGAL FULL NAME</label>
+                                <div class="input-group border rounded-3 overflow-hidden">
+                                   <input type="text" name="name" class="form-control border-0 py-3 px-4 shadow-none bg-light bg-opacity-50 xsmall" value="<%= userProfile.profile.name || '' %>" placeholder="John Doe">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted">PHONE NUMBER</label>
+                                <div class="input-group border rounded-3 overflow-hidden">
+                                   <input type="text" name="phone" class="form-control border-0 py-3 px-4 shadow-none bg-light bg-opacity-50 xsmall" value="<%= userProfile.profile.phone || '' %>" placeholder="+91-00000-00000">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <h6 class="fw-bold mb-3 border-bottom pb-2">Public Profile Bio</h6>
+                            <textarea class="form-control border rounded-3 bg-light bg-opacity-25 py-3 px-4 shadow-none xsmall" rows="4" placeholder="Tell other travelers about yourself..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary rounded-pill px-5 py-3 fw-bold border-0 shadow-sm" style="background: #fe424d;">Save Profile Changes</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Verification Hub Pane -->
+            <div class="tab-pane fade h-100" id="v-security" role="tabpanel">
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 h-100 bg-white">
+                    <h5 class="fw-bold mb-2">Identify Verification Hub</h5>
+                    <p class="text-muted small mb-5">Build trust in the community by verifying your identity.</p>
+
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-12">
+                            <div class="bg-light rounded-4 p-4 border border-dashed border-primary border-opacity-50 text-center">
+                                <i class="fa-solid fa-file-invoice fs-1 text-primary opacity-50 mb-3"></i>
+                                <h6 class="fw-bold">Upload Government ID</h6>
+                                <p class="text-muted xsmall mb-4">Aadhar, Passport or Pan Card (Max 5MB)</p>
+                                <button class="btn btn-outline-primary btn-sm rounded-pill px-4 fw-bold shadow-none">Choose File</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded-4 d-flex align-items-center">
+                                <div class="bg-success bg-opacity-10 text-success rounded-circle p-2 me-3"><i class="fa-solid fa-envelope"></i></div>
+                                <div class="flex-fill">
+                                    <h6 class="fw-bold mb-0 xsmall">Email Verified</h6>
+                                    <small class="text-muted xsmall"><%= currUser.email %></small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded-4 d-flex align-items-center">
+                                <div class="bg-warning bg-opacity-10 text-warning rounded-circle p-2 me-3"><i class="fa-solid fa-phone"></i></div>
+                                <div class="flex-fill">
+                                    <h6 class="fw-bold mb-0 xsmall">Phone Verification</h6>
+                                    <small class="text-muted xsmall">Verification pending</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Travel Prefs Pane -->
+            <div class="tab-pane fade h-100" id="v-prefs" role="tabpanel">
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 h-100 bg-white">
+                    <h5 class="fw-bold mb-2">Travel Preferences</h5>
+                    <p class="text-muted small mb-5">Tell us what you love so we can curate your dashboard.</p>
+
+                    <form action="/dashboard/user/profile" method="POST">
+                        <div class="row g-3 mb-5">
+                            <% ['Adventure', 'Luxury', 'Budget', 'Family Friendly', 'Solo Traveler', 'Nature Lover', 'City Life', 'Workation'].forEach(pref => { %>
+                            <div class="col-md-4">
+                                <label class="w-100 h-100">
+                                    <input type="checkbox" name="preferences" value="<%= pref %>" class="d-none peer-checkbox" <%= userProfile.profile.travelPreferences.includes(pref) ? 'checked' : '' %>>
+                                    <div class="p-3 border rounded-pill text-center xsmall fw-bold transition-all peer-checked:bg-primary peer-checked:text-white" style="cursor: pointer;">
+                                        <%= pref %>
+                                    </div>
+                                </label>
+                            </div>
+                            <% }) %>
+                        </div>
+                        <button type="submit" class="btn btn-dark rounded-pill px-5 py-3 fw-bold border-0 w-100">Update Preferences</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = input.closest('.card').parentElement.querySelector('.rounded-circle, .bg-primary');
+                if (img.tagName === 'IMG') {
+                    img.src = e.target.result;
+                } else {
+                    const newImg = document.createElement('img');
+                    newImg.src = e.target.result;
+                    newImg.className = 'rounded-circle shadow-sm';
+                    newImg.style = 'width: 100px; height: 100px; object-fit: cover; border: 4px solid #fff;';
+                    img.parentNode.replaceChild(newImg, img);
+                }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+<style>
+    .peer-checkbox:checked + div {
+        background-color: #fe424d !important;
+        color: white !important;
+        border-color: #fe424d !important;
+        transform: scale(1.05);
+        box-shadow: 0 4px 10px rgba(254, 66, 77, 0.2);
+    }
+</style>

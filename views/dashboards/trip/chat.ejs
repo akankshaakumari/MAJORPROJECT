@@ -1,0 +1,98 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4 h-100">
+    <!-- Chat Main Column -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 h-100 flex-column bg-white overflow-hidden">
+            <!-- Header -->
+            <div class="p-4 border-bottom d-flex align-items-center justify-content-between bg-white position-sticky top-0 z-2 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <div class="bg-indigo text-white rounded-circle me-3 d-flex align-items-center justify-content-center fw-bold xsmall" style="width: 40px; height: 40px; background: #6366f1;">
+                         <i class="fa-solid fa-comments"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0">Expedition Basecamp</h6>
+                        <small class="text-success xsmall fw-bold"><%= trip.members.length %> members in chat</small>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-light rounded-circle p-2 shadow-sm border-0" data-bs-toggle="dropdown"><i class="fa-solid fa-ellipsis-vertical text-muted"></i></button>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
+                        <li><a class="dropdown-item xsmall fw-bold" href="#">Clear History</a></li>
+                        <li><a class="dropdown-item xsmall fw-bold text-danger" href="#">Mute Notifications</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Messages Area -->
+            <div class="p-4 flex-fill overflow-auto bg-light bg-opacity-25" id="tripChatArea" style="height: 450px;">
+                <div class="text-center mb-4"><span class="badge bg-light text-muted fw-bold xsmall rounded-pill border">Trip Started: <%= trip.createdAt.toLocaleDateString() %></span></div>
+                
+                <% if(messages && messages.length > 0) { %>
+                    <% messages.forEach(msg => { %>
+                        <div class="d-flex mb-4 gap-3 align-items-end <%= msg.sender._id.toString() === currUser._id.toString() ? 'flex-row-reverse' : '' %>">
+                            <div class="bg-indigo text-white rounded-circle shadow-sm d-flex align-items-center justify-content-center xsmall fw-bold" style="width: 28px; height: 28px; background: <%= msg.sender._id.toString() === currUser._id.toString() ? '#1e293b' : '#6366f1' %>;">
+                                <%= msg.sender.username.charAt(0).toUpperCase() %>
+                            </div>
+                            <div class="p-3 rounded-4 shadow-sm xsmall <%= msg.sender._id.toString() === currUser._id.toString() ? 'bg-dark text-white border-0' : 'bg-white border text-dark' %>" 
+                                 style="max-width: 70%; <%= msg.sender._id.toString() === currUser._id.toString() ? 'border-bottom-right-radius: 4px !important;' : 'border-bottom-left-radius: 4px !important;' %>">
+                                <div class="fw-bold mb-1 <%= msg.sender._id.toString() === currUser._id.toString() ? 'text-white-50' : 'text-primary' %>" style="font-size: 0.65rem;">
+                                    <%= msg.sender.username %>
+                                </div>
+                                <%= msg.content %>
+                                <div class="text-end mt-1 <%= msg.sender._id.toString() === currUser._id.toString() ? 'text-white-50' : 'text-muted' %>" style="font-size: 0.6rem;">
+                                    <%= msg.createdAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="text-center py-5">
+                       <i class="fa-solid fa-ghost fs-1 text-muted opacity-25 mb-3"></i>
+                       <p class="text-muted small">No messages yet. Start the coordination!</p>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- Input Area -->
+            <div class="p-4 border-top bg-white">
+                <form id="tripChatForm" class="d-flex gap-3 align-items-center">
+                    <input type="text" id="chatInput" class="form-control rounded-pill border-0 py-3 bg-light shadow-none xsmall px-4" placeholder="Message the crew...">
+                    <button type="submit" class="bg-primary text-white rounded-circle p-2 shadow-sm border-0" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: #4f46e5 !important;"><i class="fa-solid fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Member List -->
+    <div class="col-lg-4 d-none d-lg-block">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+            <h6 class="fw-bold text-muted text-uppercase small mb-4">Expedition Manifest</h6>
+            <div class="nav-section">
+                <% trip.members.forEach(member => { %>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-light rounded-circle me-3 d-flex align-items-center justify-content-center fw-bold text-primary xsmall" style="width: 36px; height: 36px; border: 1px solid #e2e8f0;"><%= member.user.username.charAt(0).toUpperCase() %></div>
+                    <div class="flex-fill">
+                        <p class="fw-bold mb-0 small"><%= member.user.username %></p>
+                        <small class="text-success xsmall fw-bold">Online</small>
+                    </div>
+                    <i class="fa-solid fa-circle text-success xsmall" style="font-size: 0.5rem;"></i>
+                </div>
+                <% }) %>
+            </div>
+            
+            <div class="mt-auto pt-4 border-top">
+                <p class="text-muted xsmall mb-2">Build more trust within the group to unlock private DMs!</p>
+                <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-primary" style="width: 60%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Scroll chat to bottom on load
+    const chatArea = document.getElementById('tripChatArea');
+    chatArea.scrollTop = chatArea.scrollHeight;
+</script>

@@ -1,0 +1,204 @@
+<% layout("layouts/dashboard") %>
+
+<!-- Stat Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-center text-white h-100" style="background: #1e293b !important;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="bg-white bg-opacity-10 p-2 rounded-3">
+                    <i class="fa-solid fa-users-viewfinder fs-4 text-primary"></i>
+                </div>
+            </div>
+            <h1 class="display-5 fw-bold mb-0 text-start"><%= totalUsers %></h1>
+            <p class="text-white-50 fw-bold mb-0 text-start small">Total Users Joined</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100 text-white" style="background: linear-gradient(135deg, #02b37d 0%, #008f5d 100%) !important;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="bg-white bg-opacity-20 p-2 rounded-3">
+                    <i class="fa-solid fa-building-circle-check fs-4 text-white"></i>
+                </div>
+            </div>
+            <h1 class="display-5 fw-bold mb-0 text-start"><%= totalBookings %></h1>
+            <p class="text-white-50 fw-bold mb-0 text-start small">Total Stays Booked</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100 text-white" style="background: linear-gradient(135deg, #fe424d 0%, #d70466 100%) !important;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="bg-white bg-opacity-20 p-2 rounded-3">
+                    <i class="fa-solid fa-indian-rupee-sign fs-4 text-white"></i>
+                </div>
+            </div>
+            <h1 class="display-5 fw-bold mb-0 text-start">₹<%= platformRevenue.toLocaleString("en-IN") %></h1>
+            <p class="text-white-50 fw-bold mb-0 text-start small">Net Platform Revenue</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100 text-white" style="background: #1e293b !important;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="bg-white bg-opacity-10 p-2 rounded-3">
+                    <i class="fa-solid fa-flag fs-4 text-danger"></i>
+                </div>
+            </div>
+            <h1 class="display-5 fw-bold mb-0 text-start"><%= activeReports %></h1>
+            <p class="text-white-50 fw-bold mb-0 text-start small">Unresolved Reports</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Main Command Center Grid -->
+    <div class="col-md-8">
+        <div class="row g-4">
+            <!-- User Management Module -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 overlay-hover overflow-hidden h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-primary bg-opacity-10 p-3 rounded-4 me-3">
+                                <i class="fa-solid fa-users-gear fs-3 text-primary"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-0">User Management</h5>
+                                <small class="text-muted">Verify, Block & Audit Users</small>
+                            </div>
+                        </div>
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2 small"><i class="fa-solid fa-circle-check text-success me-2"></i> Automated ID Verification</li>
+                            <li class="mb-2 small"><i class="fa-solid fa-user-slash text-danger me-2"></i> Instance Ban & Suspension</li>
+                            <li class="small"><i class="fa-solid fa-eye text-primary me-2"></i> Audit Complaint History</li>
+                        </ul>
+                        <a href="/dashboard/admin/users" class="btn btn-primary w-100 py-2 fw-bold border-0" style="background:#5e60ce;">Enter User Hub</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Approval Module -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 overlay-hover overflow-hidden h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-warning bg-opacity-10 p-3 rounded-4 me-3">
+                                <i class="fa-solid fa-house-lock fs-3 text-warning"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-0">Property Gating</h5>
+                                <small class="text-muted">Review & Approve Listings</small>
+                            </div>
+                        </div>
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2 small"><i class="fa-solid fa-magnifying-glass-plus text-muted me-2"></i> <%= pendingApprovals %> listings waiting review</li>
+                            <li class="mb-2 small"><i class="fa-solid fa-image text-muted me-2"></i> Photographic verification</li>
+                            <li class="small"><i class="fa-solid fa-shield-virus text-danger me-2"></i> Eliminate fake listings</li>
+                        </ul>
+                        <a href="/dashboard/admin/approvals" class="btn btn-warning w-100 py-2 fw-bold text-white">Review Queue</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Module -->
+            <div class="col-md-12">
+                <div class="card border-0 shadow-sm rounded-4 p-4">
+                    <h5 class="fw-bold mb-4">System Performance Analytics</h5>
+                    <canvas id="categoryChart" style="max-height: 250px;"></canvas>
+                </div>
+            </div>
+
+            <!-- News & Events Module -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100" style="border: 2px dashed #e2e8f0 !important; background: transparent !important;">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fa-solid fa-ticket-simple text-primary fs-3 me-3"></i>
+                        <h5 class="fw-bold mb-0">Growth & Promos</h5>
+                    </div>
+                    <p class="small text-muted mb-4">Drive platform usage by generating discount codes and seasonal platform-wide offers.</p>
+                    <a href="/dashboard/admin/promotions" class="btn btn-outline-primary fw-bold w-100 py-2 border-2">Manage Coupons</a>
+                </div>
+            </div>
+
+            <!-- Roommate Hub Module -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 overlay-hover overflow-hidden h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-indigo bg-opacity-10 p-3 rounded-4 me-3">
+                                <i class="fa-solid fa-people-arrows fs-3 text-indigo" style="color: #5e60ce;"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-0">Roommate Matching</h5>
+                                <small class="text-muted">Master Requests & Safety Hub</small>
+                            </div>
+                        </div>
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2 small"><i class="fa-solid fa-list-check text-muted me-2"></i> Audit all match requests</li>
+                            <li class="mb-2 small"><i class="fa-solid fa-id-card text-muted me-2"></i> Identity verification console</li>
+                            <li class="small"><i class="fa-solid fa-handshake text-success me-2"></i> Monitor shared bookings</li>
+                        </ul>
+                        <a href="/dashboard/admin/roommates" class="btn text-white w-100 py-2 fw-bold border-0" style="background: linear-gradient(135deg, #5e60ce 0%, #4895ef 100%);">Enter Roommate Hub</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Sidebar Feed -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+            <h6 class="fw-bold mb-4 text-muted text-uppercase small letter-spacing-1">Live Feed</h6>
+            <div class="feed-list">
+                <% latestUsers.forEach(user => { %>
+                <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3 small fw-bold" style="width:36px; height:36px;"><%= user.email.charAt(0).toUpperCase() %></div>
+                    <div>
+                        <p class="mb-0 fw-bold small"><%= user.email %></p>
+                        <small class="text-muted">Joined as a <%= user.role %></small>
+                    </div>
+                    <span class="ms-auto badge bg-opacity-10 bg-success text-success small">Nouveau</span>
+                </div>
+                <% }) %>
+                <% if(latestUsers.length === 0) { %>
+                    <p class="text-center text-muted small py-3">No recent user activity.</p>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+            <div class="text-center p-4">
+                <img src="https://cdni.iconscout.com/illustration/premium/thumb/dashboard-statistics-2041130-1721528.png" class="img-fluid mb-4" style="max-width: 150px;">
+                <h5 class="fw-bold mb-2">Need Platform Data?</h5>
+                <p class="small text-muted">Generate full PDF reports or CSV exports of your platform's financial performance.</p>
+                <button class="btn btn-dark w-100 fw-bold rounded-pill shadow-sm">Export Detailed Analytics</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js and Data Implementation -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('categoryChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: <%- categoryLabels %>,
+            datasets: [{
+                label: 'Listings Status',
+                data: <%- categoryCounts %>,
+                backgroundColor: 'rgba(94, 96, 206, 0.7)',
+                borderColor: '#5e60ce',
+                borderWidth: 2,
+                borderRadius: 12
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { display: false } },
+                x: { grid: { display: false } }
+            },
+            maintainAspectRatio: false
+        }
+    });
+</script>

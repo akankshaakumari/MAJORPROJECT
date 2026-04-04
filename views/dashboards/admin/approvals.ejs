@@ -1,0 +1,50 @@
+<% layout("layouts/dashboard") %>
+<div class="card border-0 shadow-sm rounded-4 p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="fw-bold mb-0">Property Approvals</h5>
+        <span class="badge bg-warning text-dark fs-6 rounded-pill px-3 py-2"><%= typeof pendingListings !== 'undefined' ? pendingListings.length : 0 %> Pending</span>
+    </div>
+
+    <div class="row row-cols-1 g-4">
+        <% if(typeof pendingListings !== 'undefined' && pendingListings.length > 0) { %>
+            <% for(let listing of pendingListings) { %>
+            <div class="col">
+                <div class="card border shadow-none rounded-4 overflow-hidden">
+                    <div class="row g-0">
+                        <div class="col-md-3">
+                            <img src="<%= listing.image.url %>" class="img-fluid h-100 object-fit-cover" alt="Property" style="min-height: 200px;">
+                        </div>
+                        <div class="col-md-9 d-flex flex-column">
+                            <div class="card-body pb-0">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h5 class="fw-bold mb-1"><%= listing.title %> <span class="badge bg-warning text-dark fs-6 rounded-pill ms-2">Pending</span></h5>
+                                        <p class="text-muted"><i class="fa-solid fa-location-dot me-1"></i> <%= listing.location %>, <%= listing.country %></p>
+                                    </div>
+                                    <h5 class="text-dark fw-bold">₹<%= listing.price.toLocaleString("en-IN") %> <small class="text-muted fs-6">/night</small></h5>
+                                </div>
+                                <p class="card-text text-muted small mt-2"><%= listing.description %></p>
+                                <p class="card-text text-muted small">Submitted by: <strong><%= listing.owner ? listing.owner.email : 'Unknown' %></strong></p>
+                            </div>
+                            <div class="card-footer bg-white border-0 mt-auto pb-3 pt-0 d-flex gap-2">
+                                <form action="/dashboard/admin/approvals/<%= listing._id %>/approve" method="POST">
+                                    <button class="btn btn-success px-4 rounded-pill fw-bold"><i class="fa-solid fa-check me-2"></i> Approve</button>
+                                </form>
+                                <form action="/dashboard/admin/approvals/<%= listing._id %>/reject" method="POST">
+                                    <button class="btn btn-outline-danger px-4 rounded-pill fw-bold"><i class="fa-solid fa-xmark me-2"></i> Reject</button>
+                                </form>
+                                <a href="/listings/<%= listing._id %>" target="_blank" class="btn btn-light px-4 rounded-pill text-muted fw-bold ms-auto"><i class="fa-solid fa-eye me-2"></i> Preview</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        <% } else { %>
+            <div class="col text-center py-5 text-muted">
+                <i class="fa-solid fa-house-circle-check fs-1 mb-3"></i>
+                <p>No listings are currently waiting for approval.</p>
+            </div>
+        <% } %>
+    </div>
+</div>

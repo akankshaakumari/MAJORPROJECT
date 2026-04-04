@@ -1,0 +1,73 @@
+<% layout("layouts/dashboard") %>
+
+<div class="card border-0 shadow-sm rounded-4 p-4 overflow-hidden h-100">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="fw-bold mb-0">Master Request List</h5>
+        <div class="btn-group">
+            <a href="/dashboard/admin/roommates/requests" class="btn btn-sm btn-outline-dark <%= !currentFilter ? 'active' : '' %>">All</a>
+            <a href="/dashboard/admin/roommates/requests?status=waiting" class="btn btn-sm btn-outline-dark <%= currentFilter === 'waiting' ? 'active' : '' %>">Waiting</a>
+            <a href="/dashboard/admin/roommates/requests?status=matched" class="btn btn-sm btn-outline-dark <%= currentFilter === 'matched' ? 'active' : '' %>">Matched</a>
+            <a href="/dashboard/admin/roommates/requests?status=expired" class="btn btn-sm btn-outline-dark <%= currentFilter === 'expired' ? 'active' : '' %>">Expired</a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>User</th>
+                    <th>Destination</th>
+                    <th>Dates</th>
+                    <th>Preferences</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if(typeof requests !== 'undefined' && requests.length > 0) { %>
+                    <% for(let req of requests) { %>
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-2 small fw-bold" style="width:32px; height:32px;">
+                                    <%= req.author ? req.author.email.charAt(0).toUpperCase() : '?' %>
+                                </div>
+                                <span class="fw-bold small"><%= req.author ? req.author.email.split('@')[0] : 'Unknown' %></span>
+                            </div>
+                        </td>
+                        <td><i class="fa-solid fa-location-dot text-danger me-1 small"></i> <%= req.city %></td>
+                        <td>
+                            <div class="small fw-semibold"><%= new Date(req.startDate).toLocaleDateString() %></div>
+                            <div class="text-muted xsmall"><%= new Date(req.endDate).toLocaleDateString() %></div>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border small fw-normal"><%= req.myGender %></span>
+                            <span class="badge bg-light text-primary border small fw-normal">Pref: <%= req.prefGender %></span>
+                        </td>
+                        <td>
+                            <% if(req.status === 'matched') { %>
+                                <span class="text-success small fw-bold"><i class="fa-solid fa-check-circle"></i> Matched</span>
+                            <% } else if(req.status === 'expired') { %>
+                                <span class="text-muted small fw-bold"><i class="fa-solid fa-clock"></i> Expired</span>
+                            <% } else { %>
+                                <span class="text-primary small fw-bold"><i class="fa-solid fa-spinner fa-spin-pulse"></i> Waiting</span>
+                            <% } %>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-light rounded-pill px-3 fw-bold border" data-bs-toggle="dropdown">Moderate</button>
+                                <ul class="dropdown-menu shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user me-2"></i> User Profile</a></li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i class="fa-solid fa-trash me-2"></i> Remove Request</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <% } %>
+                <% } else { %>
+                    <tr><td colspan="6" class="text-center py-5 text-muted">No roommate requests found.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -59,7 +59,30 @@ const listingSchema = new Schema({
   category: {
     type: String,
     enum: ["Trending", "Rooms", "Iconic Cities", "Mountains", "Castles", "Amazing Pools", "Camping", "Farms", "Arctic", "Domes", "Boats"]
-  }
+  },
+  status: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+    default: "pending"
+  },
+  amenities: {
+    type: [String],
+    default: ["Wi-Fi", "Kitchen", "Air Conditioning"]
+  },
+  houseRules: {
+    type: [String],
+    default: ["No Smoking", "Pets Allowed", "Party-Friendly"]
+  },
+  specialPricing: {
+    weekendPrice: { type: Number, default: 0 },
+    festivalPrice: { type: Number, default: 0 },
+    longStayDiscount: { type: Number, default: 10 } // percent
+  },
+  pricingCalendar: [{
+    date: Date,
+    price: Number,
+    note: String
+  }]
 });
 
 

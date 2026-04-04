@@ -1,0 +1,49 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-12">
+        <div class="d-flex align-items-center mb-4">
+            <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-2 me-3"><i class="fa-solid fa-star-half-stroke fs-5"></i></div>
+            <h5 class="fw-bold mb-0">Guest Feedback Hall <span class="badge bg-light text-dark rounded-pill xsmall ms-2"><%= allReviews.length %></span></h5>
+        </div>
+        
+        <div class="row g-4">
+            <% allReviews.forEach(item => { %>
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 overlay-hover bg-white h-100 overflow-hidden">
+                    <div class="p-4 border-bottom bg-light bg-opacity-25">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-indigo text-white rounded-circle me-3 d-flex align-items-center justify-content-center fw-bold xsmall shadow-sm" style="width: 32px; height: 32px; background: #6366f1;"><%= item.review.author.username.charAt(0).toUpperCase() %></div>
+                                <h6 class="fw-bold mb-0 xsmall text-dark"><%= item.review.author.username %></h6>
+                            </div>
+                            <div class="text-warning small fw-bold">
+                                <% for(let i=0; i<item.review.rating; i++) { %>
+                                <i class="fa-solid fa-star"></i>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4 d-flex flex-column h-100">
+                        <h6 class="fw-bold mb-2 xsmall text-uppercase text-muted opacity-75 letter-spacing-1">ON PROPERTY</h6>
+                        <p class="fw-bold mb-3 small text-truncate"><%= item.listing.title %></p>
+                        <p class="text-muted small mb-4 italic flex-fill">"<%= item.review.comment %>"</p>
+                        <div class="d-flex justify-content-between align-items-center mt-auto">
+                            <small class="text-muted xsmall fw-bold"><%= item.review.createdAt.toLocaleDateString() %></small>
+                            <button class="btn btn-outline-dark btn-sm rounded-pill px-3 xsmall fw-bold shadow-none border">Post Public Reply</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+            <% if(allReviews.length === 0) { %>
+                <div class="col-12 text-center py-5">
+                    <div class="bg-light d-inline-flex p-4 rounded-circle mb-3">
+                        <i class="fa-solid fa-message-slash fs-1 text-muted opacity-25"></i>
+                    </div>
+                    <h6 class="fw-bold text-muted">No guest reviews yet. Listings with reviews get 5x more bookings!</h6>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>

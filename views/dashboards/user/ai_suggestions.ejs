@@ -1,0 +1,136 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-12">
+        <!-- AI Header Card -->
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden position-relative mb-4" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); min-height: 200px;">
+            <div class="position-absolute top-0 end-0 p-4 opacity-10">
+                <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 8rem;"></i>
+            </div>
+            <div class="card-body p-4 p-md-5 position-relative text-white">
+                <h2 class="fw-bold mb-2">✨ AI Stay Assistant</h2>
+                <p class="fs-5 opacity-75 mb-4">Discover the best-rated stays analyzed by our smart recommendation engine.</p>
+                
+                <form action="/dashboard/user/ai-suggestions" method="GET" class="d-flex gap-2 max-width-600">
+                    <div class="flex-fill position-relative">
+                        <i class="fa-solid fa-location-dot position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                        <input type="text" name="location" class="form-control rounded-pill border-0 py-3 ps-5 bg-white text-dark shadow-sm" placeholder="Where do you want to stay? (e.g. Goa, Mumbai)" value="<%= location || '' %>" required>
+                    </div>
+                    <button type="submit" class="btn btn-white rounded-pill px-4 fw-bold shadow-sm border-0">Ask AI</button>
+                </form>
+            </div>
+        </div>
+
+        <% if(searchPerformed) { %>
+            <div class="mb-4">
+                <h5 class="fw-bold text-dark">AI Recommended Stays in "<%= location %>"</h5>
+                <p class="text-muted small">Showing top properties analyzed by reviews and traveler satisfaction.</p>
+            </div>
+
+            <div class="row g-4">
+                <% if(suggestedListings && suggestedListings.length > 0) { %>
+                    <% suggestedListings.forEach(listing => { %>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden hover-lift bg-white">
+                                <div class="position-relative">
+                                    <img src="<%= listing.image.url %>" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                    <div class="position-absolute top-0 end-0 m-3">
+                                        <span class="badge bg-white text-primary rounded-pill shadow-sm py-2 px-3 fw-bold">
+                                            <i class="fa-solid fa-star me-1"></i> <%= listing.avgRating.toFixed(1) %> 
+                                            <span class="text-muted fw-normal small ms-1">(<%= listing.reviewCount %>)</span>
+                                        </span>
+                                    </div>
+                                    <div class="position-absolute bottom-0 start-0 m-3">
+                                        <span class="badge bg-indigo text-white rounded-pill shadow-sm py-2 px-3 fw-bold xsmall">
+                                            <i class="fa-solid fa-medal me-1"></i> Gemini Verified
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="card-body p-4">
+                                    <h6 class="fw-bold mb-1 text-dark text-truncate"><%= listing.title %></h6>
+                                    <p class="text-muted small mb-3"><i class="fa-solid fa-location-dot me-1"></i> <%= listing.location %></p>
+                                    
+                                    <!-- AI Insight Section -->
+                                    <div class="bg-indigo bg-opacity-10 rounded-4 p-3 mb-3 border-start border-4 border-indigo">
+                                        <h6 class="fw-bold text-indigo xsmall mb-1"><i class="fa-solid fa-sparkles me-1 text-indigo"></i> AI INSIGHT</h6>
+                                        <p class="xsmall text-dark fw-medium mb-0"><%= listing.aiInsight %></p>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="fw-bold text-dark">₹<%= listing.price.toLocaleString("en-IN") %></span>
+                                            <span class="text-muted xsmall">/ night</span>
+                                        </div>
+                                        <a href="/listings/<%= listing._id %>" class="btn btn-outline-indigo btn-sm rounded-pill fw-bold px-3">View Stay</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="col-12">
+                        <div class="text-center py-5 bg-white rounded-4 shadow-sm">
+                            <i class="fa-solid fa-magnifying-glass-location fs-1 text-muted opacity-25 mb-3"></i>
+                            <h6 class="text-muted fw-bold">WanderLust AI couldn't find matches in that specific area yet.</h6>
+                            <p class="text-muted small mb-0">Try searching for broader locations like "Goa" or "Maharashtra".</p>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        <% } else { %>
+            <!-- Welcome/Trending Section -->
+            <div class="row g-4 mt-2">
+                <div class="col-md-6 mb-4">
+                    <h5 class="fw-bold mb-4">Why use the AI Stay Assistant?</h5>
+                    <div class="d-flex gap-4 mb-4">
+                        <div class="bg-info bg-opacity-10 text-info rounded-circle p-3 flex-shrink-0" style="width: 50px; height: 50px;"><i class="fa-solid fa-check"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Sentiment Analysis</h6>
+                            <p class="text-muted small">We analyze thousands of traveler reviews to ensure only the highest-quality stays are suggested.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-4 mb-4">
+                        <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 flex-shrink-0" style="width: 50px; height: 50px;"><i class="fa-solid fa-bolt"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Smart Ranking</h6>
+                            <p class="text-muted small">Our algorithm weights both the average score and the number of reviews to give you properties you can trust.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="fw-bold mb-4">Trending Recommendations</h5>
+                    <% suggestedListings.forEach(listing => { %>
+                        <div class="card border-0 shadow-sm rounded-4 mb-3 p-3 bg-white">
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="<%= listing.image.url %>" class="rounded-3 shadow-sm" style="width: 80px; height: 60px; object-fit: cover;">
+                                <div>
+                                    <h6 class="fw-bold mb-0 small text-dark"><%= listing.title %></h6>
+                                    <div class="d-flex align-items-center gap-2 mt-1">
+                                        <span class="badge bg-light text-warning xsmall rounded-pill"><i class="fa-solid fa-star me-1"></i> <%= listing.reviews.length > 0 ? (listing.reviews.reduce((a,b)=>a+b.rating, 0)/listing.reviews.length).toFixed(1) : '5.0' %></span>
+                                        <span class="text-muted xsmall"><%= listing.location %></span>
+                                    </div>
+                                </div>
+                                <a href="/listings/<%= listing._id %>" class="btn btn-light btn-sm ms-auto rounded-circle p-2"><i class="fa-solid fa-arrow-right-long text-primary"></i></a>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<style>
+    .max-width-600 { max-width: 600px; }
+    .btn-white { background-color: white !important; color: #6366f1 !important; transition: transform 0.2s; }
+    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .placeholder-white-50::placeholder { color: rgba(255, 255, 255, 0.6) !important; }
+    .hover-lift { transition: transform 0.2s; }
+    .hover-lift:hover { transform: translateY(-5px); }
+    .text-indigo { color: #6366f1 !important; }
+    .btn-outline-indigo { border-color: #6366f1 !important; color: #6366f1 !important; }
+    .btn-outline-indigo:hover { background-color: #6366f1 !important; color: white !important; }
+    .bg-indigo { background-color: #6366f1 !important; }
+    .bg-indigo.bg-opacity-10 { background-color: rgba(99, 102, 241, 0.1) !important; }
+    .border-indigo { border-color: #6366f1 !important; }
+</style>

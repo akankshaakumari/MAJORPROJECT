@@ -41,14 +41,24 @@ module.exports.isLoggedIn = (req, res, next) => {
         req.flash("error", "You must be logged in!");
         return res.redirect("/login");
     }
+    
+    // Check if the user is suspended
+    if (req.user && req.user.isBlocked) {
+        req.logout((err) => {
+            req.flash("error", "Your account has been suspended by an Administrator.");
+            return res.redirect("/login");
+        });
+        return;
+    }
+
     next();
 };
 
 module.exports.isOwner = async (req, res, next) => {
     let { id } = req.params;
     let listing = await require("./models/listing.js").findById(id);
-    if (!listing.owner.equals(res.locals.currUser._id)) {
-        req.flash("error", "You are not the owner of this listing!");
+    if (!listing.owner.equals(res.locals.currUser._id) && res.locals.currUser.role !== 'admin') {
+        req.flash("error", "You are not the owner of this property!");
         return res.redirect(`/listings/${id}`);
     }
     next();
@@ -57,7 +67,7 @@ module.exports.isOwner = async (req, res, next) => {
 module.exports.isReviewAuthor = async (req, res, next) => {
     let { id, reviewId } = req.params;
     let review = await require("./models/review.js").findById(reviewId);
-    if (!review.author.equals(res.locals.currUser._id)) {
+    if (!review.author.equals(res.locals.currUser._id) && res.locals.currUser.role !== 'admin') {
         req.flash("error", "You are not the author of this review!");
         return res.redirect(`/listings/${id}`);
     }
@@ -71,4 +81,28 @@ module.exports.saveRedirectUrl = (req, res, next) => {
     next();
 };
 
+module.exports.isHost = (req, res, next) => {
+    if (req.user && (req.user.role === 'host' || req.user.role === 'admin')) {
+        return next();
+    }
+    req.flash("error", "You do not have permission to access the host panel.");
+    return res.redirect("/");
+};
 
+module.exports.isAdmin = (req, res, next) => {
+    if (req.user && req.user.role === 'admin') {
+        return next();
+    }
+    req.flash("error", "You do not have permission to access the admin panel.");
+    return res.redirect("/");
+};
+
+module.exports.isTripMember = async (req, res, next) => {
+    const { id } = req.params;
+    const trip = await require("./models/trip.js").findById(id);
+    if (!trip || !trip.members.some(m => m.user.equals(req.user._id)) && req.user.role !== 'admin') {
+        req.flash("error", "You are not a member of this trip expedition!");
+        return res.redirect("/dashboard/user");
+    }
+    next();
+};

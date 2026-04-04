@@ -1,0 +1,133 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4 mb-4">
+    <!-- Welcome Card -->
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-white h-100" style="background: linear-gradient(135deg, #FF385C 0%, #BD1E59 100%);">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="fw-bold mb-2">Welcome back, <%= currUser.username %>! 👋</h2>
+                    <p class="mb-4 opacity-75">Your next adventure is just a click away. Ready to explore the world again?</p>
+                    <a href="/listings" class="btn btn-light fw-bold rounded-pill px-4" style="color: #FF385C;">Explore New Stays</a>
+                </div>
+                <div class="col-md-4 text-center d-none d-md-block">
+                    <img src="https://cdni.iconscout.com/illustration/premium/thumb/traveler-searching-vacation-location-on-map-4438965-3700021.png" class="img-fluid" style="max-height: 150px; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2));">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verification Status Card -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+            <h6 class="fw-bold text-muted text-uppercase small mb-3">Verification Hub</h6>
+            <div class="d-flex align-items-center mb-4">
+                <div class="me-3 position-relative">
+                    <% if(currUser.profile && currUser.profile.profileImage && currUser.profile.profileImage.url) { %>
+                        <img src="<%= currUser.profile.profileImage.url %>" class="rounded-circle shadow-sm" style="width: 52px; height: 52px; object-fit: cover;">
+                    <% } else { %>
+                        <div class="bg-light rounded-circle p-3 text-secondary" style="width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-user"></i></div>
+                    <% } %>
+                </div>
+                <div>
+                    <% if(currUser.profile && currUser.profile.verificationStatus === 'verified') { %>
+                        <p class="mb-0 fw-bold">Verified Traveler ✔️</p>
+                        <small class="text-muted">Trusted community member</small>
+                    <% } else if(currUser.profile && currUser.profile.verificationStatus === 'pending') { %>
+                        <p class="mb-1 fw-bold text-warning">Review Pending</p>
+                        <div class="progress" style="height: 6px; width: 100px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" style="width: 75%"></div>
+                        </div>
+                    <% } else { %>
+                        <p class="mb-0 fw-bold">Unverified</p>
+                        <small class="text-muted"><a href="/dashboard/user/profile" class="text-primary text-decoration-none">Complete verification</a></small>
+                    <% } %>
+                </div>
+            </div>
+            <div class="mt-auto">
+                <p class="small text-muted mb-2">Build more trust to unlock premium matching!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Stats -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white overlay-hover">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h3 class="fw-bold mb-0"><%= upcomingBookingsCount %></h3>
+                    <p class="text-muted small mb-0">Upcoming Trips</p>
+                </div>
+                <div class="bg-primary bg-opacity-10 text-primary p-2 rounded-3"><i class="fa-solid fa-suitcase-rolling"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white overlay-hover">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h3 class="fw-bold mb-0 text-danger"><%= wishlistCount %></h3>
+                    <p class="text-muted small mb-0">Saved Properties</p>
+                </div>
+                <div class="bg-danger bg-opacity-10 text-danger p-2 rounded-3"><i class="fa-solid fa-heart"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white overlay-hover">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h3 class="fw-bold mb-0 text-success"><%= buddyRequestsCount %></h3>
+                    <p class="text-muted small mb-0">Buddy Requests</p>
+                </div>
+                <div class="bg-success bg-opacity-10 text-success p-2 rounded-3"><i class="fa-solid fa-user-group"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Recent Activity Feed -->
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold mb-0">Recent Activity Log</h5>
+                <span class="badge bg-light text-dark rounded-pill">Last 7 Days</span>
+            </div>
+            
+            <div class="timeline ps-3 border-start">
+                <% recentActivity.forEach(activity => { %>
+                <div class="timeline-item pb-4 position-relative">
+                    <span class="position-absolute start-0 translate-middle bg-white p-1" style="left: -17px !important;">
+                        <div class="bg-primary rounded-circle" style="width: 12px; height: 12px;"></div>
+                    </span>
+                    <div class="ms-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <h6 class="fw-bold mb-0"><%= activity.title %></h6>
+                            <small class="text-muted xsmall"><%= activity.time %></small>
+                        </div>
+                        <p class="text-muted small mb-0"><%= activity.desc %></p>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Card -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-dark text-white overflow-hidden position-relative">
+            <div class="position-relative z-1">
+                <h5 class="fw-bold mb-3">Quick Actions</h5>
+                <div class="d-grid gap-2">
+                    <a href="/dashboard/user/profile" class="btn btn-outline-light btn-sm text-start py-2 border-opacity-25 border-white rounded-3"><i class="fa-solid fa-id-card me-2"></i> Verify ID Proof</a>
+                    <a href="/listings/new" class="btn btn-outline-light btn-sm text-start py-2 border-opacity-25 border-white rounded-3"><i class="fa-solid fa-home me-2"></i> Join as Host</a>
+                    <a href="/dashboard/user/reviews" class="btn btn-outline-light btn-sm text-start py-2 border-opacity-25 border-white rounded-3"><i class="fa-solid fa-star me-2"></i> Rate Recent Stays</a>
+                </div>
+            </div>
+            <i class="fa-solid fa-bolt position-absolute bottom-0 end-0 fs-1 text-white opacity-10 m-3"></i>
+        </div>
+    </div>
+</div>

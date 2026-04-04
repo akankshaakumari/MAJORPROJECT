@@ -1,0 +1,71 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h5 class="fw-bold mb-4">Create New Coupon</h5>
+            <form action="/dashboard/admin/promotions" method="POST" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Coupon Code</label>
+                    <input type="text" name="coupon[code]" class="form-control rounded-3" placeholder="e.g. SUMMER50" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Discount Amount (%)</label>
+                    <input type="number" name="coupon[discountPercentage]" class="form-control rounded-3" min="1" max="100" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Valid From</label>
+                    <input type="date" name="coupon[validFrom]" class="form-control rounded-3" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Valid Until</label>
+                    <input type="date" name="coupon[validUntil]" class="form-control rounded-3" required>
+                </div>
+                <button class="btn btn-dark w-100 py-2 fw-bold rounded-3 mt-2">Generate Coupon</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+            <h5 class="fw-bold mb-4">Active Promotions</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Code</th>
+                            <th>Discount</th>
+                            <th>Expires</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(typeof coupons !== 'undefined' && coupons.length > 0) { %>
+                            <% for(let coupon of coupons) { %>
+                                <% const isExpired = new Date(coupon.validUntil) < new Date(); %>
+                                <tr>
+                                    <td><span class="badge border <%= isExpired ? 'text-muted' : 'border-dark text-dark' %> fs-6 rounded-pill"><%= coupon.code %></span></td>
+                                    <td class="fw-bold <%= isExpired ? 'text-muted' : 'text-success' %>"><%= coupon.discountPercentage %>% OFF</td>
+                                    <td class="<%= isExpired ? 'text-muted' : '' %>"><%= new Date(coupon.validUntil).toLocaleDateString() %></td>
+                                    <td>
+                                        <% if(isExpired) { %>
+                                            <span class="text-muted fw-bold small"><i class="fa-solid fa-circle fa-2xs"></i> Expired</span>
+                                        <% } else { %>
+                                            <span class="text-success fw-bold small"><i class="fa-solid fa-circle fa-2xs"></i> Active</span>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-light text-danger rounded-circle"><i class="fa-solid fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        <% } else { %>
+                            <tr><td colspan="5" class="text-center py-4 text-muted">No coupons generated yet.</td></tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

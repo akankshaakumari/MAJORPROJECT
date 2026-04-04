@@ -1,0 +1,55 @@
+<% layout("layouts/dashboard") %>
+
+<div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-4">
+        <div>
+            <h5 class="fw-bold mb-1">Identity Verification Console</h5>
+            <p class="text-muted small mb-0">Award the "Verified Traveler ✔️" badge to trusted users.</p>
+        </div>
+        <span class="badge bg-warning text-dark px-3 rounded-pill">Pending Proofs: <%= pendingUsers ? pendingUsers.length : 0 %></span>
+    </div>
+
+    <div class="row g-4">
+        <% if(typeof pendingUsers !== 'undefined' && pendingUsers.length > 0) { %>
+            <% for(let user of pendingUsers) { %>
+            <div class="col-md-6">
+                <div class="card border rounded-4 p-4 h-100 shadow-none">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-pill d-flex align-items-center justify-content-center me-3 small fw-bold" style="width:44px; height:44px;">
+                            <%= user.username.charAt(0).toUpperCase() %>
+                        </div>
+                        <div>
+                            <p class="mb-0 fw-bold"><%= user.username %></p>
+                            <small class="text-muted"><%= user.email %></small>
+                        </div>
+                    </div>
+                    
+                    <div class="id-proof-preview mb-4 bg-light rounded-4 border p-4 text-center">
+                        <i class="fa-solid fa-file-invoice fs-1 text-muted mb-3"></i>
+                        <p class="small text-muted mb-0">Mock Document ID: TRAVELER_PROOF_<%= user._id.toString().slice(-6) %>.jpg</p>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-auto">
+                        <form action="/dashboard/admin/roommates/verify/<%= user._id %>" method="POST" class="flex-fill">
+                            <input type="hidden" name="status" value="verified">
+                            <button class="btn btn-success w-100 fw-bold rounded-pill border-0"><i class="fa-solid fa-check-circle me-1"></i> Approve</button>
+                        </form>
+                        <form action="/dashboard/admin/roommates/verify/<%= user._id %>" method="POST" class="flex-fill">
+                            <input type="hidden" name="status" value="rejected">
+                            <button class="btn btn-outline-danger w-100 fw-bold rounded-pill border-0"><i class="fa-solid fa-times-circle me-1"></i> Reject</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        <% } else { %>
+            <div class="col-12 text-center py-5">
+                <div class="bg-light d-inline-flex p-4 rounded-circle mb-3">
+                    <i class="fa-solid fa-circle-check fs-1 text-success"></i>
+                </div>
+                <h5 class="fw-bold">Queue Cleared!</h5>
+                <p class="text-muted small">All traveler documents have been reviewed.</p>
+            </div>
+        <% } %>
+    </div>
+</div>

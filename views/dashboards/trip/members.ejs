@@ -1,0 +1,91 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-12">
+        <div class="d-flex align-items-center mb-4">
+            <div class="bg-indigo bg-opacity-10 text-indigo rounded-circle p-2 me-3"><i class="fa-solid fa-users-viewfinder fs-5 text-indigo"></i></div>
+            <h5 class="fw-bold mb-0">Expedition Members <span class="badge bg-light text-muted rounded-pill xsmall ms-2"><%= trip.members.length %> Shared Travelers</span></h5>
+        </div>
+        
+        <div class="row g-4">
+            <% trip.members.forEach(member => { %>
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+                    <div class="p-4 border-bottom bg-light bg-opacity-25 d-flex align-items-center">
+                        <div class="user-avatar-large me-3 shadow-sm border border-2 border-white"><%= member.user.username.charAt(0).toUpperCase() %></div>
+                        <div class="flex-fill">
+                            <h6 class="fw-bold mb-0"><%= member.user.username %></h6>
+                            <small class="badge <%= member.status === 'joined' ? 'bg-success bg-opacity-10 text-success' : 'bg-warning bg-opacity-10 text-warning' %> rounded-pill xsmall px-2 py-1"><%= member.status.charAt(0).toUpperCase() + member.status.slice(1) %></small>
+                        </div>
+                        <% if(member.user._id.toString() === currUser._id.toString()) { %>
+                            <span class="badge bg-dark rounded-pill xsmall px-2 py-1">ME</span>
+                        <% } %>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-4">
+                             <div class="d-flex align-items-center mb-2">
+                                <i class="fa-solid fa-plane-arrival xsmall text-muted me-2"></i>
+                                <span class="fw-bold xsmall text-muted text-uppercase letter-spacing-1">Estimated Arrival</span>
+                             </div>
+                             <p class="fw-bold mb-0 small text-dark"><%= member.arrivalTime ? member.arrivalTime.toLocaleString() : 'Not shared yet' %></p>
+                        </div>
+                        <div class="mb-4">
+                             <div class="d-flex align-items-center mb-2">
+                                <i class="fa-solid fa-id-card-clip xsmall text-muted me-2"></i>
+                                <span class="fw-bold xsmall text-muted text-uppercase letter-spacing-1">Contact Details</span>
+                             </div>
+                             <p class="fw-bold mb-0 small text-dark"><%= member.contactInfo || 'Private' %></p>
+                        </div>
+                        <div class="d-flex gap-2">
+                             <% if(member.user._id.toString() !== currUser._id.toString()) { %>
+                                 <button class="btn btn-outline-dark btn-sm flex-fill rounded-pill py-2 fw-bold"><i class="fa-solid fa-comment-dots me-1"></i> Message</button>
+                                 <button class="btn btn-light btn-sm flex-fill rounded-pill py-2 border shadow-none"><i class="fa-solid fa-phone me-1"></i> Call</button>
+                             <% } else { %>
+                                 <button class="btn btn-dark btn-sm w-100 rounded-pill py-2 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#updateInfoModal"><i class="fa-solid fa-pen-to-square me-1"></i> Update My Arrival info</button>
+                             <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </div>
+</div>
+
+<!-- Update Info Modal -->
+<div class="modal fade" id="updateInfoModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+            <div class="p-4 border-bottom bg-light bg-opacity-50">
+                <h5 class="fw-bold mb-0">Update Arrival Details</h5>
+            </div>
+            <form action="/dashboard/trip/<%= tripId %>/members/update" method="POST">
+                <div class="modal-body p-4">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold xsmall text-muted">ESTIMATED ARRIVAL TIME</label>
+                        <input type="datetime-local" name="arrivalTime" class="form-control rounded-pill py-3 px-4 shadow-none bg-light bg-opacity-50 xsmall">
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-bold xsmall text-muted">SHARED CONTACT (PHONE/SOCIAL)</label>
+                        <input type="text" name="contactInfo" class="form-control rounded-pill py-3 px-4 shadow-none bg-light bg-opacity-50 xsmall" placeholder="+91-00000-00000">
+                    </div>
+                </div>
+                <div class="p-4 border-top d-flex gap-2">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-bold flex-fill py-2" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold flex-fill py-2">Save Details</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .text-indigo { color: #6366f1 !important; }
+    .user-avatar-large {
+        width: 44px; height: 44px;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        color: white; font-weight: 800; font-size: 1.1rem;
+    }
+</style>

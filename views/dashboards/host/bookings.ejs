@@ -1,0 +1,95 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4 mb-5">
+    <!-- Pending Action Queue -->
+    <div class="col-md-12">
+        <div class="d-flex align-items-center mb-4">
+            <div class="bg-warning bg-opacity-10 text-warning rounded-circle p-2 me-3"><i class="fa-solid fa-bell-concierge fs-5"></i></div>
+            <h5 class="fw-bold mb-0">Pending Requests <span class="badge bg-warning text-dark rounded-pill xsmall ms-2"><%= pendingRequests.length %></span></h5>
+        </div>
+        
+        <div class="row g-3">
+            <% pendingRequests.forEach(req => { %>
+            <div class="col-md-12">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white border-start border-4 border-warning">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary rounded-circle me-4 flex-shrink-0 d-flex align-items-center justify-content-center text-white" style="width: 52px; height: 52px;">
+                            <i class="fa-solid fa-user-clock fs-4"></i>
+                        </div>
+                        <div class="flex-fill">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h6 class="fw-bold mb-1"><%= req.user ? req.user.username : 'Guest' %> <small class="text-muted fw-normal xsmall ms-2">• 1 guest</small></h6>
+                                    <p class="text-muted small mb-0"><i class="fa-solid fa-home me-1"></i> <%= req.listing.title %></p>
+                                </div>
+                                <div class="text-end">
+                                    <p class="fw-bold mb-0 text-primary">₹<%= req.totalPrice %></p>
+                                    <small class="text-muted xsmall"><%= req.checkIn.toLocaleDateString() %> - <%= req.checkOut.toLocaleDateString() %></small>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <form action="/dashboard/host/bookings/<%= req._id %>/status" method="POST">
+                                    <input type="hidden" name="status" value="confirmed">
+                                    <button class="btn btn-success btn-sm rounded-pill px-4 fw-bold shadow-sm">Accept Booking</button>
+                                </form>
+                                <form action="/dashboard/host/bookings/<%= req._id %>/status" method="POST">
+                                    <input type="hidden" name="status" value="rejected">
+                                    <button class="btn btn-outline-danger btn-sm rounded-pill px-4 fw-bold">Reject Request</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+            <% if(pendingRequests.length === 0) { %>
+                <div class="col-12">
+                    <div class="card border-2 border-dashed rounded-4 p-4 text-center bg-transparent">
+                        <p class="text-muted small mb-0">No pending requests at the moment.</p>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Upcoming Guests -->
+    <div class="col-md-12 mt-5">
+        <div class="d-flex align-items-center mb-4">
+            <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-2 me-3"><i class="fa-solid fa-suitcase-rolling fs-5"></i></div>
+            <h5 class="fw-bold mb-0">Upcoming Arrivals</h5>
+        </div>
+        
+        <div class="row g-4">
+            <% upcomingGuests.forEach(guest => { %>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 p-0 overflow-hidden bg-white">
+                    <div class="p-4">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-indigo text-white rounded-circle me-3 d-flex align-items-center justify-content-center fw-bold xsmall" style="width: 36px; height: 36px; background: #6366f1;"><%= guest.user.username.charAt(0).toUpperCase() %></div>
+                            <div>
+                                <h6 class="fw-bold mb-0"><%= guest.user.username %></h6>
+                                <small class="text-muted xsmall">Arrival: <%= guest.checkIn.toLocaleDateString() %></small>
+                            </div>
+                            <span class="ms-auto badge bg-success bg-opacity-10 text-success rounded-pill xsmall">Confirmed</span>
+                        </div>
+                        <div class="bg-light rounded-3 p-3 mb-4 d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="text-muted xsmall mb-0 text-uppercase fw-bold">PROPERTY</p>
+                                <p class="fw-bold mb-0 small text-truncate" style="max-width: 150px;"><%= guest.listing.title %></p>
+                            </div>
+                            <div class="text-end">
+                                <p class="text-muted xsmall mb-0 text-uppercase fw-bold">GUESTS</p>
+                                <p class="fw-bold mb-0 small"><%= guest.guests %> Person</p>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                             <a href="/dashboard/host/chat" class="btn btn-outline-dark btn-sm flex-fill rounded-pill py-2 fw-bold"><i class="fa-solid fa-message me-1"></i> Message</a>
+                             <button class="btn btn-light btn-sm flex-fill rounded-pill py-2 border shadow-none"><i class="fa-solid fa-phone me-1"></i> Call Guest</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </div>
+</div>

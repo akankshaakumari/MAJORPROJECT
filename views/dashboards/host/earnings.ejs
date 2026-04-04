@@ -1,0 +1,94 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4 mb-5">
+    <!-- Revenue Overview -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-white h-100" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%);">
+            <h6 class="text-white-50 text-uppercase small fw-bold mb-4">Total Platform Revenue</h6>
+            <h1 class="display-4 fw-bold mb-0">₹<%= totalRevenue.toLocaleString("en-IN") %></h1>
+            <p class="mt-4 small mb-0"><i class="fa-solid fa-arrow-trend-up text-success me-1"></i> <span class="text-success fw-bold">+12%</span> from last month (estimated)</p>
+        </div>
+    </div>
+
+    <!-- Monthly Breakdown -->
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold mb-0">Monthly Trends</h5>
+                <div class="bg-light rounded-pill p-1 d-flex gap-1">
+                    <button class="btn btn-white btn-sm rounded-pill px-3 fw-bold border-0 shadow-none">Daily</button>
+                    <button class="btn btn-dark btn-sm rounded-pill px-3 fw-bold border-0">Monthly</button>
+                </div>
+            </div>
+            <canvas id="monthlyEarningsChart" style="max-height: 150px;"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Payout Table -->
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold mb-0">Revenue Logs</h5>
+                <button class="btn btn-outline-dark btn-sm rounded-pill px-4 fw-bold shadow-none"><i class="fa-solid fa-download me-2"></i> Export CSV</button>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-hover align-middle border-light">
+                    <thead class="bg-light bg-opacity-50">
+                        <tr>
+                            <th class="border-0 xsmall fw-bold text-muted py-3 px-3">PROPERTY</th>
+                            <th class="border-0 xsmall fw-bold text-muted py-3">BOOKING DATE</th>
+                            <th class="border-0 xsmall fw-bold text-muted py-3 text-center">GUESTS</th>
+                            <th class="border-0 xsmall fw-bold text-muted py-3 text-end px-3">NET EARNINGS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% bookings.forEach(booking => { %>
+                        <tr>
+                            <td class="py-3 px-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary rounded-3 me-3" style="width: 32px; height: 32px;"></div>
+                                    <h6 class="fw-bold mb-0 small text-truncate" style="max-width: 200px;"><%= booking.listing.title %></h6>
+                                </div>
+                            </td>
+                            <td class="py-3 small text-muted"><%= booking.createdAt.toLocaleDateString() %></td>
+                            <td class="py-3 text-center small fw-bold"><%= booking.guests %> People</td>
+                            <td class="py-3 text-end px-3">
+                                <span class="fw-bold text-dark">₹<%= booking.totalPrice %></span>
+                                <small class="text-success xsmall d-block fw-bold">Settled</small>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const earningsCtx = document.getElementById('monthlyEarningsChart').getContext('2d');
+    new Chart(earningsCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+            datasets: [{
+                label: 'Revenue',
+                data: [5400, 7100, 6800, 8900, 10200, 12500],
+                backgroundColor: '#10b981',
+                borderRadius: 12
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { display: false, grid: { display: false } },
+                x: { border: { display: false }, grid: { display: false }, ticks: { font: { weight: 'bold' } } }
+            },
+            maintainAspectRatio: false
+        }
+    });
+</script>

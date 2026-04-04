@@ -52,6 +52,15 @@ const roommateSchema = new Schema({
         type: Boolean,
         default: false
     },
+    status: {
+        type: String,
+        enum: ["waiting", "matched", "expired"],
+        default: "waiting"
+    },
+    isEmergencyTriggered: {
+        type: Boolean,
+        default: false
+    },
     createdAt: {
         type: Date,
         default: Date.now

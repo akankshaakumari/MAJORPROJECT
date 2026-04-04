@@ -1,0 +1,112 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4 h-100">
+    <!-- Chat Sidebar / Recent Conversations -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+            <div class="p-4 border-bottom">
+                <div class="d-flex justify-content-between align-items-center mb-0">
+                    <h5 class="fw-bold mb-0">Messages</h5>
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-2"><i class="fa-solid fa-pen-to-square"></i></div>
+                </div>
+            </div>
+            
+            <div class="p-3">
+                <input type="text" class="form-control rounded-pill bg-light border-0 py-2 px-3 xsmall" placeholder="Search chats...">
+            </div>
+
+            <div class="overflow-auto pe-1" style="max-height: 500px;">
+                <!-- Host Chat Mock -->
+                <div class="p-3 border-bottom d-flex align-items-center bg-primary bg-opacity-5 position-relative">
+                    <div class="bg-primary rounded-circle me-3 flex-shrink-0" style="width: 44px; height: 44px;"></div>
+                    <div class="flex-fill">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <h6 class="fw-bold mb-0 xsmall">Superhost Sarah</h6>
+                            <span class="xsmall text-muted fw-bold">10:45 AM</span>
+                        </div>
+                        <p class="text-truncate xsmall mb-0 text-muted">Looking forward to your checkout at 11 AM tomorrow!</p>
+                    </div>
+                </div>
+                <!-- Roommate Chat Mock -->
+                <div class="p-3 border-bottom d-flex align-items-center">
+                    <div class="bg-secondary bg-opacity-50 rounded-circle me-3 flex-shrink-0" style="width: 44px; height: 44px;"></div>
+                    <div class="flex-fill">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <h6 class="fw-bold mb-0 xsmall">Goa Trip Group</h6>
+                            <span class="xsmall text-muted fw-bold">Yesterday</span>
+                        </div>
+                        <p class="text-truncate xsmall mb-0 text-muted fw-bold text-dark">Rohan: Should we book the car today?</p>
+                    </div>
+                </div>
+                <!-- Other messages from database list -->
+                <% messages.forEach(message => { %>
+                <div class="p-3 border-bottom d-flex align-items-center">
+                    <div class="bg-light rounded-circle me-3 flex-shrink-0" style="width: 44px; height: 44px;"></div>
+                    <div class="flex-fill">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <h6 class="fw-bold mb-0 xsmall"><%= message.sender._id.equals(currUser._id) ? message.recipient.username : message.sender.username %></h6>
+                            <span class="xsmall text-muted fw-bold"><%= message.createdAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></span>
+                        </div>
+                        <p class="text-truncate xsmall mb-0 text-muted"><%= message.content %></p>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Chat Window -->
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm rounded-4 h-100 flex-column bg-white overflow-hidden">
+            <!-- Header -->
+            <div class="p-4 border-bottom d-flex align-items-center justify-content-between bg-white position-sticky top-0 z-2">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary rounded-circle me-3" style="width: 40px; height: 40px;"></div>
+                    <div>
+                        <h6 class="fw-bold mb-0">Superhost Sarah</h6>
+                        <small class="text-success xsmall fw-bold"><i class="fa-solid fa-circle me-1 fa-2xs"></i> Active Now</small>
+                    </div>
+                </div>
+                <div class="d-flex gap-3 text-muted">
+                    <i class="fa-solid fa-phone"></i>
+                    <i class="fa-solid fa-video"></i>
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+            </div>
+
+            <!-- Messages Area -->
+            <div class="p-4 flex-fill overflow-auto bg-light bg-opacity-25" style="height: 400px;">
+                <div class="text-center mb-4"><span class="badge bg-light text-muted fw-bold xsmall rounded-pill">Today</span></div>
+                
+                <div class="d-flex mb-4 gap-3 align-items-end">
+                    <div class="bg-primary rounded-circle shadow-sm" style="width: 28px; height: 28px;"></div>
+                    <div class="bg-white p-3 rounded-4 shadow-sm xsmall" style="max-width: 70%; border-bottom-left-radius: 4px !important;">
+                        Hello! Hope you enjoyed your stay. Please remember that checkout is by 11:00 AM tomorrow so the cleaning crew can arrive!
+                    </div>
+                </div>
+
+                <div class="d-flex mb-4 gap-3 align-items-end flex-row-reverse">
+                    <div class="bg-white p-3 rounded-4 shadow-sm xsmall text-white" style="max-width: 70%; border-bottom-right-radius: 4px !important; background: #fe424d !important;">
+                        Thanks Sarah! We had a great time. We'll be ready by 10:30.
+                    </div>
+                </div>
+                
+                <div class="d-flex mb-4 gap-3 align-items-end">
+                    <div class="bg-primary rounded-circle shadow-sm" style="width: 28px; height: 28px;"></div>
+                    <div class="bg-white p-3 rounded-4 shadow-sm xsmall" style="max-width: 70%; border-bottom-left-radius: 4px !important;">
+                        Perfect! Safe travels and see you soon.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="p-4 border-top bg-white">
+                <div class="d-flex gap-3 align-items-center">
+                    <div class="text-muted"><i class="fa-solid fa-plus-circle fs-4"></i></div>
+                    <input type="text" class="form-control rounded-pill border-0 py-3 bg-light shadow-none xsmall px-4" placeholder="Type your message here...">
+                    <div class="bg-primary text-white rounded-circle p-2" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-paper-plane"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

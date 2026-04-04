@@ -1,0 +1,73 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4 mb-5">
+    <!-- Pricing Strategy Banner -->
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-white overflow-hidden h-100" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%);">
+            <div class="row align-items-center">
+                <div class="col-md-9">
+                    <h5 class="fw-bold mb-3">Optimize Your Daily Rates 📈</h5>
+                    <p class="small text-white-50 mb-0">Set dynamic pricing rules to automatically adjust your listing's cost based on high-demand periods like weekends and festivals.</p>
+                </div>
+                <div class="col-md-3 text-end d-none d-md-block">
+                    <i class="fa-solid fa-chart-line fs-1 opacity-25"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Management Grid -->
+    <div class="col-md-12 mt-4">
+        <div class="row g-4">
+            <% myListings.forEach(listing => { %>
+            <div class="col-md-12">
+                <div class="card border-0 shadow-sm rounded-4 p-0 overflow-hidden bg-white">
+                    <div class="p-4 border-bottom bg-light bg-opacity-50">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary rounded-3 me-3" style="width: 44px; height: 44px;"></div>
+                            <div class="flex-fill">
+                                <h6 class="fw-bold mb-0 text-dark"><%= listing.title %></h6>
+                                <small class="text-muted xsmall fw-bold">Current Base Price: ₹<%= listing.price %></small>
+                            </div>
+                            <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 small fw-bold">Live Status</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <form action="/dashboard/host/pricing/<%= listing._id %>/rules" method="POST">
+                            <div class="row g-4 mb-4">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold xsmall text-uppercase text-muted letter-spacing-1">Weekend Surcharge (+)</label>
+                                    <div class="input-group border rounded-3 overflow-hidden bg-light bg-opacity-75">
+                                        <span class="input-group-text bg-transparent border-0 pe-0 text-muted small px-3">₹</span>
+                                        <input type="number" name="weekendPrice" class="form-control border-0 py-3 shadow-none bg-transparent xsmall fw-bold" value="<%= listing.specialPricing && listing.specialPricing.weekendPrice ? listing.specialPricing.weekendPrice : '' %>" placeholder="e.g. 500">
+                                    </div>
+                                    <small class="text-muted xsmall mt-1 block">Applied on Fri, Sat, Sun nights</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold xsmall text-uppercase text-muted letter-spacing-1">Festival Surcharge (+)</label>
+                                    <div class="input-group border rounded-3 overflow-hidden bg-light bg-opacity-75">
+                                        <span class="input-group-text bg-transparent border-0 pe-0 text-muted small px-3">₹</span>
+                                        <input type="number" name="festivalPrice" class="form-control border-0 py-3 shadow-none bg-transparent xsmall fw-bold" value="<%= listing.specialPricing && listing.specialPricing.festivalPrice ? listing.specialPricing.festivalPrice : '' %>" placeholder="e.g. 1500">
+                                    </div>
+                                    <small class="text-muted xsmall mt-1 block">Applied during peak season dates</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold xsmall text-uppercase text-muted letter-spacing-1">Long-stay Discount (-)</label>
+                                    <div class="input-group border rounded-3 overflow-hidden bg-light bg-opacity-75">
+                                        <input type="number" name="longStayDiscount" class="form-control border-0 py-3 shadow-none bg-transparent xsmall fw-bold ps-4" value="<%= listing.specialPricing && listing.specialPricing.longStayDiscount ? listing.specialPricing.longStayDiscount : '' %>" placeholder="e.g. 10">
+                                        <span class="input-group-text bg-transparent border-0 ps-0 text-muted small px-3">%</span>
+                                    </div>
+                                    <small class="text-muted xsmall mt-1 block">For bookings 7+ nights long</small>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-dark rounded-pill px-5 py-2 fw-bold xsmall shadow-none border-0">Apply Strategy Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </div>
+</div>

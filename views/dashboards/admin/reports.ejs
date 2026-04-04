@@ -1,0 +1,84 @@
+<% layout("layouts/dashboard") %>
+<div class="card border-0 shadow-sm rounded-4 p-4">
+    <h5 class="fw-bold justify-content-between d-flex align-items-center mb-4">
+        Reports & Complaints
+    </h5>
+
+    <ul class="nav nav-tabs mb-4 px-3" id="reportTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold text-dark bg-transparent border-0 border-bottom border-dark border-3" data-bs-toggle="tab" data-bs-target="#active">Active <span class="badge bg-danger ms-1"><%= typeof activeReports !== 'undefined' ? activeReports.length : 0 %></span></button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold text-muted bg-transparent border-0" data-bs-toggle="tab" data-bs-target="#resolved">Resolved</button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="active">
+            <% if(typeof activeReports !== 'undefined' && activeReports.length > 0) { %>
+                <% for(let report of activeReports) { %>
+                <div class="card border rounded-4 shadow-none mb-3 <%= report.type === 'listing' ? 'border-danger' : 'border-warning' %> border-opacity-50 border-2">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="fw-bold <%= report.type === 'listing' ? 'text-danger' : 'text-warning-emphasis' %>">
+                                <i class="fa-solid <%= report.type === 'listing' ? 'fa-triangle-exclamation' : 'fa-users-slash' %> me-2"></i> 
+                                <%= report.reason %>
+                            </h6>
+                            <span class="badge bg-light text-muted border">ID: #<%= report._id.toString().substring(18, 24).toUpperCase() %></span>
+                        </div>
+                        <p class="mb-2 mt-2">
+                            User <strong><%= report.reportedBy ? report.reportedBy.email.split('@')[0] : 'Unknown' %></strong> reported 
+                            <% if(report.type === 'listing' && report.reportedListing) { %>
+                                property <strong><%= report.reportedListing.title %></strong>
+                            <% } else if(report.type === 'user' && report.reportedUser) { %>
+                                user <strong><%= report.reportedUser.email.split('@')[0] %></strong>
+                            <% } %>
+                        </p>
+                        <p class="text-muted small">"<%= report.description %>"</p>
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn btn-sm btn-dark rounded-pill px-3">Investigate</button>
+                            <% if(report.type === 'listing') { %>
+                                <button class="btn btn-sm btn-danger rounded-pill px-3">Suspend Listing</button>
+                            <% } else { %>
+                                <button class="btn btn-sm btn-warning rounded-pill px-3 text-dark">Block User</button>
+                            <% } %>
+                            <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 ms-auto">Dismiss</button>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+            <% } else { %>
+                <div class="text-center py-5 text-muted">
+                    <i class="fa-regular fa-face-smile fs-1 mb-3"></i>
+                    <p>No active reports to handle.</p>
+                </div>
+            <% } %>
+        </div>
+        <div class="tab-pane fade" id="resolved">
+            <% if(typeof resolvedReports !== 'undefined' && resolvedReports.length > 0) { %>
+                <% for(let report of resolvedReports) { %>
+                    <div class="card border rounded-4 shadow-none mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="fw-bold text-muted"><%= report.reason %></h6>
+                                <span class="badge bg-success">Resolved</span>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            <% } else { %>
+                <div class="text-center py-5 text-muted">
+                    <p>No resolved reports found.</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+<script>
+    document.querySelectorAll('.nav-tabs .nav-link').forEach(tab => {
+        tab.addEventListener('show.bs.tab', function(e) {
+            document.querySelectorAll('.nav-tabs .nav-link').forEach(t => t.classList.remove('active', 'text-dark', 'border-bottom', 'border-dark', 'border-3'));
+            e.target.classList.add('active', 'text-dark', 'border-bottom', 'border-dark', 'border-3');
+        });
+    });
+</script>

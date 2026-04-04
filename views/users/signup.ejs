@@ -1,41 +1,122 @@
 <% layout("/layouts/boilerplate") %>
 
-<div class="row mt-5">
-    <div class="col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
-        <div class="card shadow" style="border-radius: 1rem;">
-            <div class="card-body p-4 p-md-5">
-                <h3 class="card-title text-center mb-4 fw-bold" style="color: #222222;">Welcome to WanderLust</h3>
-                <p class="text-center text-muted mb-4">Sign up to discover exciting places</p>
-                <form action="/signup" method="POST" class="needs-validation" novalidate>
-                    <div class="mb-4">
-                        <label for="username" class="form-label fw-semibold">Username</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="fa-solid fa-user text-muted"></i></span>
-                            <input type="text" id="username" name="username" class="form-control form-control-lg bg-light" placeholder="Enter username" required>
-                            <div class="invalid-feedback">Please choose a username.</div>
-                        </div>
+<style>
+    .role-card {
+        border: 2px solid #e2e8f0;
+        border-radius: 1rem;
+        cursor: pointer;
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 1.5rem;
+        text-align: center;
+        background: #fff;
+    }
+    .role-card:hover {
+        border-color: #fe424d;
+        background: #fffafa;
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px rgba(254, 66, 77, 0.1);
+    }
+    .role-card.active {
+        border-color: #fe424d;
+        background: #fffafa;
+        box-shadow: 0 0 0 4px rgba(254, 66, 77, 0.1);
+    }
+    .role-card i {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: #717171;
+        transition: 0.3s;
+    }
+    .role-card.active i {
+        color: #fe424d;
+    }
+    .role-input {
+        display: none;
+    }
+    .signup-container {
+        max-width: 500px;
+        margin: 3rem auto;
+    }
+    .input-group-text { padding: 0.75rem 1rem; }
+</style>
+
+<div class="signup-container">
+    <div class="card border-0 shadow-lg" style="border-radius: 1.5rem;">
+        <div class="card-body p-4 p-md-5">
+            <h2 class="fw-bold mb-2 text-center" style="letter-spacing: -0.5px;">Join WanderLust</h2>
+            <p class="text-secondary text-center mb-5">Create an account to start your adventure</p>
+
+            <form action="/signup" method="POST" class="needs-validation" novalidate>
+                <!-- Role Selection Cards -->
+                <label class="form-label fw-bold small text-uppercase text-secondary mb-3">Choose Your Role</label>
+                <div class="row g-3 mb-5">
+                    <div class="col-6">
+                        <label class="role-card h-100" id="travelerCard">
+                            <input type="radio" name="role" value="user" class="role-input" checked required>
+                            <i class="fa-solid fa-plane-departure"></i>
+                            <div class="fw-bold small">Traveler</div>
+                            <div class="text-muted xsmall mt-1">Book stays</div>
+                        </label>
                     </div>
-                    <div class="mb-4">
-                        <label for="email" class="form-label fw-semibold">Email</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="fa-solid fa-envelope text-muted"></i></span>
-                            <input type="email" id="email" name="email" class="form-control form-control-lg bg-light" placeholder="Enter email" required>
-                            <div class="invalid-feedback">Please enter a valid email.</div>
-                        </div>
+                    <div class="col-6">
+                        <label class="role-card h-100" id="hostCard">
+                            <input type="radio" name="role" value="host" class="role-input" required>
+                            <i class="fa-solid fa-house-chimney-user"></i>
+                            <div class="fw-bold small">Host</div>
+                            <div class="text-muted xsmall mt-1">Airbnb home</div>
+                        </label>
                     </div>
-                    <div class="mb-4">
-                        <label for="password" class="form-label fw-semibold">Password</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="fa-solid fa-lock text-muted"></i></span>
-                            <input type="password" id="password" name="password" class="form-control form-control-lg bg-light" placeholder="Create password" required>
-                            <div class="invalid-feedback">Please enter a password.</div>
-                        </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="username" class="form-label fw-bold small text-secondary">USERNAME</label>
+                    <div class="input-group border rounded-3 overflow-hidden">
+                        <span class="input-group-text bg-white border-0"><i class="fa-solid fa-at text-muted"></i></span>
+                        <input type="text" id="username" name="username" class="form-control border-0 bg-white py-3 shadow-none" placeholder="Choose a name" required>
                     </div>
-                    <div class="d-grid mt-5">
-                        <button type="submit" class="btn btn-lg text-white" style="background-color: #fe424d; border-radius: 0.5rem; font-weight: 600; letter-spacing: 0.5px;">Sign Up</button>
+                    <div class="invalid-feedback">Please choose a username.</div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="email" class="form-label fw-bold small text-secondary">EMAIL ADDRESS</label>
+                    <div class="input-group border rounded-3 overflow-hidden">
+                        <span class="input-group-text bg-white border-0"><i class="fa-solid fa-envelope text-muted"></i></span>
+                        <input type="email" id="email" name="email" class="form-control border-0 bg-white py-3 shadow-none" placeholder="you@example.com" required>
                     </div>
-                </form>
-            </div>
+                    <div class="invalid-feedback">Please enter a valid email.</div>
+                </div>
+
+                <div class="mb-5">
+                    <label for="password" class="form-label fw-bold small text-secondary">PASSWORD</label>
+                    <div class="input-group border rounded-3 overflow-hidden">
+                        <span class="input-group-text bg-white border-0"><i class="fa-solid fa-lock text-muted"></i></span>
+                        <input type="password" id="password" name="password" class="form-control border-0 bg-white py-3 shadow-none" placeholder="Minimum 6 characters" required>
+                    </div>
+                    <div class="invalid-feedback">Please enter a password.</div>
+                </div>
+
+                <button type="submit" class="btn btn-lg w-100 text-white border-0 shadow-sm py-3" style="background: linear-gradient(135deg, #FF385C 0%, #BD1E59 100%); border-radius: 0.75rem; font-weight: 700; letter-spacing: 0.5px;">Create Account</button>
+
+                <p class="text-center mt-4 text-muted small">Already on WanderLust? <a href="/login" class="text-primary text-decoration-none fw-bold">Log in</a></p>
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+    const travelerCard = document.getElementById('travelerCard');
+    const hostCard = document.getElementById('hostCard');
+    
+    // Initial State
+    travelerCard.classList.add('active');
+
+    travelerCard.onclick = () => {
+        travelerCard.classList.add('active');
+        hostCard.classList.remove('active');
+    };
+    
+    hostCard.onclick = () => {
+        hostCard.classList.add('active');
+        travelerCard.classList.remove('active');
+    };
+</script>

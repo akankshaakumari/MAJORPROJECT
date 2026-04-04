@@ -29,6 +29,19 @@ const bookingSchema = new Schema({
         required: true,
         default: 1
     },
+    isRoommateShared: {
+        type: Boolean,
+        default: false
+    },
+    roommatePartner: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    },
+    status: {
+        type: String,
+        enum: ["pending", "confirmed", "rejected", "cancelled", "completed"],
+        default: "pending"
+    },
     createdAt: {
         type: Date,
         default: Date.now

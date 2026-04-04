@@ -1,0 +1,88 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-12">
+        <div class="d-flex align-items-center mb-4">
+            <div class="bg-warning bg-opacity-10 text-warning rounded-circle p-2 me-3"><i class="fa-solid fa-basket-shopping fs-5"></i></div>
+            <h5 class="fw-bold mb-0">Shared Grocery Planner <span class="badge bg-light text-muted rounded-pill xsmall ms-2"><%= trip.groceryList.length %> Items Needed</span></h5>
+        </div>
+        
+        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+            <div class="d-flex justify-content-between align-items-center mb-4 text-center text-md-start">
+                 <h6 class="fw-800 text-dark mb-0">Community Provision List</h6>
+                 <button class="btn btn-warning rounded-pill px-4 fw-bold xsmall border-0 shadow-sm py-2" data-bs-toggle="modal" data-bs-target="#addGroceryModal"><i class="fa-solid fa-cart-plus me-2"></i> Add Item</button>
+            </div>
+
+            <div class="row g-3">
+                <% if(trip.groceryList && trip.groceryList.length > 0) { %>
+                    <% trip.groceryList.forEach(item => { %>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card border border-light rounded-4 p-4 shadow-none h-100 transition-all hover-border-warning <%= item.isBought ? 'bg-light bg-opacity-50' : '' %>">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center xsmall fw-bold shadow-none" style="width: 32px; height: 32px;"><i class="fa-solid fa-carrot"></i></div>
+                                    <div class="flex-fill">
+                                        <h6 class="fw-bold mb-1 small <%= item.isBought ? 'text-decoration-line-through text-muted' : 'text-dark' %>"><%= item.item %></h6>
+                                        <div class="d-flex align-items-center mt-2">
+                                            <div class="bg-dark text-white rounded-circle me-1 d-flex align-items-center justify-content-center xsmall fw-800" style="width: 18px; height: 18px; font-size: 0.5rem;"><%= item.assignedTo.username.charAt(0).toUpperCase() %></div>
+                                            <span class="xsmall text-muted fw-bold">Assigned to <%= item.assignedTo.username %></span>
+                                        </div>
+                                    </div>
+                                    <% if(!item.isBought) { %>
+                                        <span class="badge bg-warning bg-opacity-10 text-warning xsmall rounded-pill">Needed</span>
+                                    <% } else { %>
+                                        <span class="badge bg-success bg-opacity-10 text-success xsmall rounded-pill">Bought</span>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="col-12 py-5 text-center">
+                         <div class="bg-light p-4 rounded-circle d-inline-flex mb-4">
+                            <i class="fa-solid fa-apple-whole fs-1 text-muted opacity-25"></i>
+                         </div>
+                         <h6 class="fw-bold text-muted">A shared kitchen deserves a shared list. What's on the menu?</h6>
+                         <button class="btn btn-warning rounded-pill px-4 fw-bold shadow-none border-0 mt-3 xsmall" data-bs-toggle="modal" data-bs-target="#addGroceryModal">Add My First Item</button>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Grocery Modal -->
+<div class="modal fade" id="addGroceryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+            <div class="p-4 border-bottom bg-light bg-opacity-50 text-center">
+                <h5 class="fw-bold mb-0 text-dark">Add to Provision List</h5>
+            </div>
+            <form action="/dashboard/trip/<%= tripId %>/grocery/add" method="POST">
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold xsmall text-muted">GROCERY ITEM</label>
+                            <input type="text" name="item" class="form-control rounded-pill py-3 px-4 shadow-none bg-light bg-opacity-50 xsmall" placeholder="Milk, Eggs, Coffee, Snacks..." required>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold xsmall text-muted">ASSIGN TO (Responsible for Buying)</label>
+                            <select name="assignedTo" class="form-select rounded-pill py-3 px-4 shadow-none bg-light bg-opacity-50 xsmall border-0 h-100">
+                                <% trip.members.forEach(m => { %>
+                                    <option value="<%= m.user._id %>"><%= m.user.username %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 border-top d-flex gap-2">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-bold flex-fill py-2" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning rounded-pill px-4 fw-bold flex-fill py-2 shadow-none border-0">Add Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-border-warning:hover { border-color: #f59e0b !important; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+</style>

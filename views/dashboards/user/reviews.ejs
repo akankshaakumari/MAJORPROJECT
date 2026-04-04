@@ -1,0 +1,103 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-8">
+        <ul class="nav nav-pills mb-4 bg-white p-2 rounded-4 shadow-sm d-inline-flex" id="reviewTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active rounded-pill px-4 fw-bold" id="my-reviews-tab" data-bs-toggle="pill" data-bs-target="#my-reviews" type="button"><i class="fa-solid fa-list-check me-2"></i> Reviews I Wrote</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill px-4 fw-bold" id="host-ratings-tab" data-bs-toggle="pill" data-bs-target="#host-ratings" type="button"><i class="fa-solid fa-handshake me-2"></i> Ratings from Hosts</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="reviewTabsContent">
+            <!-- Reviews written by me -->
+            <div class="tab-pane fade show active" id="my-reviews" role="tabpanel">
+                <div class="row g-4">
+                    <% myReviews.forEach(review => { %>
+                    <div class="col-md-12">
+                        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white overlay-hover">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary rounded-3 me-3" style="width: 44px; height: 44px;"></div>
+                                    <div>
+                                        <h6 class="fw-bold mb-1"><%= review.listing ? review.listing.title : 'Stay Review' %></h6>
+                                        <small class="text-muted"><%= review.createdAt.toLocaleDateString() %></small>
+                                    </div>
+                                </div>
+                                <div class="bg-warning bg-opacity-10 px-3 py-1 rounded-pill fw-bold text-warning xsmall"><i class="fa-solid fa-star me-1"></i> <%= review.rating %> / 5</div>
+                            </div>
+                            <p class="text-muted small mb-0 font-italic">"<%= review.comment %>"</p>
+                        </div>
+                    </div>
+                    <% }) %>
+                    <% if(myReviews.length === 0) { %>
+                        <div class="col-12 text-center py-5">
+                           <i class="fa-solid fa-pen-nib fs-1 text-muted opacity-25 mb-3"></i>
+                           <h6 class="fw-bold text-muted">You haven't written any reviews yet.</h6>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Ratings from hosts -->
+            <div class="tab-pane fade" id="host-ratings" role="tabpanel">
+                <div class="row g-4">
+                    <% hostReviews.forEach(review => { %>
+                    <div class="col-md-12">
+                        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white overlay-hover border-start border-4 border-success">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-dark rounded-circle me-3 d-flex align-items-center justify-content-center text-white" style="width: 44px; height: 44px;"><i class="fa-solid fa-user-tie"></i></div>
+                                    <div>
+                                        <h6 class="fw-bold mb-1"><%= review.authorName %></h6>
+                                        <small class="text-muted"><%= review.createdAt.toLocaleDateString() %></small>
+                                    </div>
+                                </div>
+                                <div class="d-flex text-warning fs-6">
+                                    <% for(let i=0; i<review.rating; i++) { %>
+                                        <i class="fa-solid fa-star"></i>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <p class="text-muted small mb-0 fw-bold">"<%= review.comment %>"</p>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reputation Summary Sidebar -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+            <h6 class="fw-bold text-muted text-uppercase small mb-4">Guest Reputation</h6>
+            <div class="text-center mb-5">
+                <div class="d-inline-flex bg-primary bg-opacity-5 rounded-circle p-4 mb-3 border-4 border border-opacity-10 border-primary">
+                    <h1 class="fw-bold display-4 mb-0 text-primary">5.0</h1>
+                </div>
+                <h5 class="fw-bold">Superguest Badge 🏅</h5>
+                <p class="text-muted small">You are in the top 5% of guests on WanderLust!</p>
+            </div>
+            
+            <div class="bg-light rounded-4 p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3 xsmall fw-bold">
+                    <span>CLEANLINESS</span>
+                    <span class="text-success">EXCELLENT</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3 xsmall fw-bold">
+                    <span>COMMUNICATION</span>
+                    <span class="text-success">TOP TIER</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center xsmall fw-bold">
+                    <span>HOUSE RULES</span>
+                    <span class="text-success">FLAWLESS</span>
+                </div>
+            </div>
+            
+            <button class="btn btn-outline-dark btn-sm w-100 rounded-pill py-2 fw-bold">Share Reputation Profile</button>
+        </div>
+    </div>
+</div>

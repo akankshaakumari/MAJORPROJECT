@@ -1,0 +1,161 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4 mb-5">
+    <!-- Settlement Overview -->
+    <div class="col-md-5">
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-white h-100" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%);">
+            <h6 class="text-white-50 text-uppercase small fw-bold mb-4">Expedition Net Settlement</h6>
+            <% let someoneOwes = false; %>
+            <% Object.entries(balances).forEach(([uid, bal]) => { %>
+                <% const member = trip.members.find(m => m.user._id.toString() === uid); %>
+                <% if(member) { %>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-indigo text-white rounded-circle me-3 d-flex align-items-center justify-content-center xsmall fw-bold border border-2 border-white-50" style="width: 32px; height: 32px; background: #6366f1;">
+                                <%= member.user.username.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="fw-bold small"><%= member.user.username %></span>
+                        </div>
+                        <div class="text-end">
+                            <% if(bal > 0) { %>
+                                <span class="text-success fw-bold small">+₹<%= bal.toLocaleString("en-IN") %></span>
+                                <p class="xsmall text-white-50 mb-0">Will Receive</p>
+                            <% } else if(bal < 0) { %>
+                                <% someoneOwes = true; %>
+                                <span class="text-danger fw-bold small">-₹<%= Math.abs(bal).toLocaleString("en-IN") %></span>
+                                <p class="xsmall text-white-50 mb-0">Will Pay</p>
+                            <% } else { %>
+                                <span class="text-muted fw-bold small">Settled</span>
+                            <% } %>
+                        </div>
+                    </div>
+                <% } %>
+            <% }) %>
+            
+            <% if(!someoneOwes) { %>
+                <div class="text-center py-4 border border-dashed border-white-50 rounded-4">
+                    <p class="xsmall mb-0 opacity-75">All accounts are currently balanced.</p>
+                </div>
+            <% } %>
+
+            <div class="mt-auto pt-4 border-top border-white-10">
+                <p class="xsmall text-white-50 mb-0 italic">Net settlement helps you avoid awkward money talk at the end of the trip.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expense Stats & Action -->
+    <div class="col-md-7">
+        <div class="row g-4 h-100">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+                    <h6 class="fw-bold text-muted text-uppercase small mb-4">Total Shared Cost</h6>
+                    <% let totalExp = 0; if(trip.expenses) { trip.expenses.forEach(e => totalExp += e.amount); } %>
+                    <h1 class="display-5 fw-bold mb-0 text-dark">₹<%= totalExp.toLocaleString("en-IN") %></h1>
+                    <p class="text-muted small mt-2 mb-0">Divided by <%= trip.members.length %> members</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-primary bg-opacity-10 text-center d-flex flex-column justify-content-center">
+                    <i class="fa-solid fa-file-invoice-dollar fs-1 text-primary mb-3"></i>
+                    <button class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm py-2" data-bs-toggle="modal" data-bs-target="#addExpenseModal"><i class="fa-solid fa-plus me-2"></i> Add Expense</button>
+                    <p class="xsmall text-muted mt-2 mb-0">Click to record food, cab, or tickets.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <h5 class="fw-bold mb-4">Transaction Logs</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle border-light">
+                    <thead class="bg-light bg-opacity-50">
+                        <tr>
+                            <th class="border-0 xsmall fw-bold text-muted py-3 px-3">CATEGORY</th>
+                            <th class="border-0 xsmall fw-bold text-muted py-3">DESCRIPTION</th>
+                            <th class="border-0 xsmall fw-bold text-muted py-3">PAID BY</th>
+                            <th class="border-0 xsmall fw-bold text-muted py-3 text-end px-3">AMOUNT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(trip.expenses && trip.expenses.length > 0) { %>
+                            <% trip.expenses.forEach(exp => { %>
+                                <tr>
+                                    <td class="py-3 px-3">
+                                        <span class="badge bg-light text-dark rounded-pill xsmall px-3 py-2 fw-bold"><%= exp.category %></span>
+                                    </td>
+                                    <td class="py-3">
+                                        <h6 class="fw-bold mb-0 small text-dark"><%= exp.description %></h6>
+                                        <small class="text-muted xsmall"><%= exp.date.toLocaleDateString() %></small>
+                                    </td>
+                                    <td class="py-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-dark text-white rounded-circle me-2 d-flex align-items-center justify-content-center xsmall fw-bold shadow-sm" style="width: 24px; height: 24px;"><%= exp.paidBy.username.charAt(0).toUpperCase() %></div>
+                                            <span class="small fw-bold"><%= exp.paidBy.username %></span>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 text-end px-3">
+                                        <span class="fw-bold text-dark">₹<%= exp.amount.toLocaleString("en-IN") %></span>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="4" class="text-center py-5">
+                                    <p class="text-muted small mb-0 italic">No shared expenses recorded yet. Be the first one!</p>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Expense Modal -->
+<div class="modal fade" id="addExpenseModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+            <div class="p-4 border-bottom bg-light bg-opacity-50 text-center">
+                <h5 class="fw-bold mb-0">Record a Shared Expense</h5>
+            </div>
+            <form action="/dashboard/trip/<%= tripId %>/expenses/add" method="POST">
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold xsmall text-muted">DESCRIPTION</label>
+                            <input type="text" name="description" class="form-control rounded-pill py-3 px-4 shadow-none bg-light bg-opacity-50 xsmall" placeholder="Dinner at Beach Shack" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold xsmall text-muted">AMOUNT (₹)</label>
+                            <input type="number" name="amount" class="form-control rounded-pill py-3 px-4 shadow-none bg-light bg-opacity-50 xsmall" placeholder="0.00" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold xsmall text-muted">CATEGORY</label>
+                            <select name="category" class="form-select rounded-pill py-3 px-4 shadow-none bg-light bg-opacity-50 xsmall border-0 h-100">
+                                <option value="Food">Food 🍔</option>
+                                <option value="Cab">Transport 🚕</option>
+                                <option value="Tickets">Tickets 🎫</option>
+                                <option value="Other">Other 📦</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 border-top d-flex gap-2">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-bold flex-fill py-2" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold flex-fill py-2 shadow-none border-0">Add Expense</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-white-10 { background-color: rgba(255,255,255,0.1); }
+    .border-white-10 { border-color: rgba(255,255,255,0.1) !important; }
+    .border-white-50 { border-color: rgba(255,255,255,0.3) !important; }
+</style>

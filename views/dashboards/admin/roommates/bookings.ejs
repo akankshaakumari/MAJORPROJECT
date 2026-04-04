@@ -1,0 +1,68 @@
+<% layout("layouts/dashboard") %>
+
+<div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="fw-bold mb-0">Shared Bookings Monitor</h5>
+        <span class="badge bg-primary rounded-pill px-3"><%= sharedBookings ? sharedBookings.length : 0 %> Matches</span>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Roommate A</th>
+                    <th>Partner</th>
+                    <th>Property</th>
+                    <th>Dates</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if(typeof sharedBookings !== 'undefined' && sharedBookings.length > 0) { %>
+                    <% for(let booking of sharedBookings) { %>
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-2 small fw-bold" style="width:32px; height:32px;">
+                                    <%= booking.user ? booking.user.username.charAt(0).toUpperCase() : '?' %>
+                                </div>
+                                <span class="fw-bold small"><%= booking.user ? booking.user.username : 'Unknown' %></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center opacity-75">
+                                <i class="fa-solid fa-plus-circle me-2 text-muted small"></i>
+                                <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center me-2 small fw-bold" style="width:28px; height:28px;">
+                                    <%= booking.roommatePartner ? booking.roommatePartner.username.charAt(0).toUpperCase() : '?' %>
+                                </div>
+                                <span class="fw-bold small"><%= booking.roommatePartner ? booking.roommatePartner.username : 'Empty' %></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="small fw-bold"><%= booking.listing ? booking.listing.title : 'Listing Deleted' %></div>
+                            <div class="text-muted xsmall"><%= booking.listing ? booking.listing.location : '' %></div>
+                        </td>
+                        <td>
+                            <div class="small fw-semibold"><%= new Date(booking.checkIn).toLocaleDateString() %></div>
+                            <div class="text-muted xsmall"><%= new Date(booking.checkOut).toLocaleDateString() %></div>
+                        </td>
+                        <td><span class="fw-bold text-success">₹<%= booking.totalPrice.toLocaleString("en-IN") %></span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-light rounded-pill px-3 fw-bold border" data-bs-toggle="dropdown"><i class="fa-solid fa-ellipsis-v small"></i></button>
+                                <ul class="dropdown-menu shadow border-0">
+                                    <li><a class="dropdown-item text-danger" href="#"><i class="fa-solid fa-ban me-2"></i> Cancel Shared Bill</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-receipt me-2"></i> Dispute Refund</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <% } %>
+                <% } else { %>
+                    <tr><td colspan="6" class="text-center py-5 text-muted">No shared bookings found.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>

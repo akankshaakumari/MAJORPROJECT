@@ -1,0 +1,107 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4 mb-4">
+    <!-- Trip Banner -->
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden position-relative" style="min-height: 280px;">
+            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1600" class="position-absolute w-100 h-100" style="object-fit: cover; filter: brightness(0.75);">
+            <div class="position-relative p-4 p-md-5 d-flex flex-column justify-content-center h-100 text-white">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold">Adventure Mode Active</span>
+                    <span class="badge bg-white bg-opacity-20 px-3 py-2 rounded-pill fw-bold">Trip ID: <%= tripId.toString().substring(18, 24).toUpperCase() %></span>
+                </div>
+                <h1 class="display-4 fw-bold mb-2"><%= trip.title %></h1>
+                <p class="fs-5 opacity-90 mb-4"><i class="fa-solid fa-map-location-dot me-2"></i> Shared Stay Expedition • Group of <%= trip.members.length %></p>
+                
+                <div class="d-flex gap-3 mt-auto">
+                    <a href="/dashboard/trip/<%= tripId %>/chat" class="btn btn-white rounded-pill px-4 fw-bold border-0 shadow-sm"><i class="fa-solid fa-comments me-2"></i> Trip Chat</a>
+                    <a href="/dashboard/trip/<%= tripId %>/planner" class="btn btn-outline-white rounded-pill px-4 fw-bold border-1"><i class="fa-solid fa-route me-2"></i> Full Itinerary</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Quick Stats Hub -->
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+            <h6 class="fw-bold text-muted text-uppercase small mb-3">Expedition Budget</h6>
+            <h2 class="fw-bold text-primary mb-1">₹<%= totalExpenses.toLocaleString("en-IN") %></h2>
+            <p class="text-muted small mb-0">Total shared spending</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+            <h6 class="fw-bold text-muted text-uppercase small mb-3">Packing Status</h6>
+            <h2 class="fw-bold text-success mb-1"><%= packingProgress %>%</h2>
+            <div class="progress" style="height: 6px;">
+                <div class="progress-bar bg-success" style="width: <%= packingProgress %>%;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+            <h6 class="fw-bold text-muted text-uppercase small mb-3">Team Unity</h6>
+            <div class="d-flex align-items-center">
+                <% trip.members.slice(0, 3).forEach(m => { %>
+                    <div class="bg-indigo text-white rounded-circle me-n2 d-flex align-items-center justify-content-center border border-2 border-white" style="width: 32px; height: 32px; background: #6366f1; z-index: 10;"><%= m.user.username.charAt(0).toUpperCase() %></div>
+                <% }) %>
+                <% if(trip.members.length > 3) { %>
+                    <div class="bg-light text-muted rounded-circle d-flex align-items-center justify-content-center border border-2 border-white ms-n2" style="width: 32px; height: 32px; z-index: 1;">+<%= trip.members.length - 3 %></div>
+                <% } %>
+                <span class="ms-3 fw-bold small"><%= trip.members.length %> Joined</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-info bg-opacity-10">
+            <h6 class="fw-bold text-info text-uppercase small mb-3">House Rules</h6>
+            <% if(trip.roomRules && trip.roomRules.agreedBy && trip.roomRules.agreedBy.includes(currUser._id)) { %>
+                <p class="text-success fw-bold mb-0"><i class="fa-solid fa-circle-check me-2"></i> All Rules Agreed</p>
+            <% } else { %>
+                <form action="/dashboard/trip/<%= tripId %>/rules/agree" method="POST">
+                    <button class="btn btn-info btn-sm text-white w-100 rounded-pill fw-bold py-2">Agree to Rules</button>
+                </form>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Next Landmark & Planner Preview -->
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white overflow-hidden">
+            <h5 class="fw-bold mb-4">🗺️ Expedition Landmarks</h5>
+            <div class="row g-4">
+                <% if(trip.planner && trip.planner.length > 0) { %>
+                    <% trip.planner.slice(0, 3).forEach((day, index) => { %>
+                        <div class="col-md-4">
+                            <div class="bg-light rounded-4 p-3 border h-100">
+                                <h6 class="fw-bold text-primary mb-2">Day <%= day.day %></h6>
+                                <p class="small fw-bold mb-1"><%= day.places[0].name %></p>
+                                <p class="text-muted xsmall mb-0"><%= day.places[0].notes || 'Explore and enjoy!' %></p>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="col-12">
+                        <div class="p-4 bg-light rounded-4 text-center border border-dashed">
+                             <p class="text-muted small mb-0">No plans added yet. Time to build your itinerary!</p>
+                             <a href="/dashboard/trip/<%= tripId %>/planner" class="btn btn-link text-primary xsmall fw-bold text-decoration-none">+ Create First Plan</a>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-white { background-color: white !important; color: #fe424d !important; transition: transform 0.2s; }
+    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .btn-outline-white { border-color: white !important; color: white !important; }
+    .btn-outline-white:hover { background-color: rgba(255,255,255,0.1); }
+    .me-n2 { margin-right: -8px !important; }
+    .ms-n2 { margin-left: -8px !important; }
+</style>

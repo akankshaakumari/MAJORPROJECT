@@ -141,7 +141,7 @@
                                 </div>
                                 <p class="starability-result mb-2" data-rating="<%= review.rating %>"></p>
                                 <p class="card-text text-muted" style="font-size: 0.95rem;"><%= review.comment %></p>
-                                <% if (currUser && currUser._id.equals(review.author._id)) { %>
+                                <% if (currUser && (currUser._id.equals(review.author._id) || currUser.role === 'admin')) { %>
                                     <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" class="m-0 mt-3 text-end">
                                         <button class="btn btn-sm text-danger border-0"><i class="fa-solid fa-trash-can"></i></button>
                                     </form>
@@ -152,7 +152,7 @@
                 <% } %>
             </div>
 
-            <% if(currUser) { %>
+            <% if(currUser && currUser.role !== 'admin' && !currUser._id.equals(listing.owner._id)) { %>
                 <div class="card p-4 border-0 shadow-sm rounded-5 mb-5" style="background-color: #ffffff; border: 1px solid #eee !important;">
                     <h5 class="fw-bold mb-3">Leave a Review</h5>
                     <form action="/listings/<%= listing.id %>/reviews" method="POST" novalidate class="needs-validation">
@@ -197,52 +197,60 @@
                 </div>
             </div>
 
-            <form action="/listings/<%= listing._id %>/bookings" method="POST" id="bookingForm" class="needs-validation" novalidate>
-                <div class="booking-input-group mb-4">
-                    <div class="row g-0">
-                        <div class="col-6 border-right border-bottom">
-                            <p class="input-label">Check-in</p>
-                            <input type="date" name="booking[checkIn]" id="checkIn" class="booking-input" required />
-                        </div>
-                        <div class="col-6 border-bottom">
-                            <p class="input-label">Check-out</p>
-                            <input type="date" name="booking[checkOut]" id="checkOut" class="booking-input" required />
-                        </div>
-                        <div class="col-12">
-                            <p class="input-label">Guests</p>
-                            <select name="booking[guests]" class="booking-input" required>
-                                <option value="1">1 Guest</option>
-                                <option value="2" selected>2 Guests</option>
-                                <option value="3">3 Guests</option>
-                                <option value="4">4 Guests</option>
-                            </select>
-                        </div>
-                    </div>
+            <% if (currUser && (currUser.role === 'admin' || currUser._id.equals(listing.owner._id))) { %>
+                <div class="alert alert-secondary text-center p-4 border-0 rounded-4 mt-3">
+                    <i class="fa-solid fa-shield-halved fs-1 mb-3 text-muted"></i>
+                    <h5 class="fw-bold mb-1">Preview Mode Active</h5>
+                    <p class="small text-muted mb-0">Admins and property owners cannot reserve stays on their own listings.</p>
                 </div>
+            <% } else { %>
+                <form action="/listings/<%= listing._id %>/bookings" method="POST" id="bookingForm" class="needs-validation" novalidate>
+                    <div class="booking-input-group mb-4">
+                        <div class="row g-0">
+                            <div class="col-6 border-right border-bottom">
+                                <p class="input-label">Check-in</p>
+                                <input type="date" name="booking[checkIn]" id="checkIn" class="booking-input" required />
+                            </div>
+                            <div class="col-6 border-bottom">
+                                <p class="input-label">Check-out</p>
+                                <input type="date" name="booking[checkOut]" id="checkOut" class="booking-input" required />
+                            </div>
+                            <div class="col-12">
+                                <p class="input-label">Guests</p>
+                                <select name="booking[guests]" class="booking-input" required>
+                                    <option value="1">1 Guest</option>
+                                    <option value="2" selected>2 Guests</option>
+                                    <option value="3">3 Guests</option>
+                                    <option value="4">4 Guests</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
-                <button class="btn booking-btn btn-danger w-100 mb-3 text-white rounded-3 shadow">Reserve ✨</button>
-                <p class="text-center text-muted small mb-3">You won't be charged yet</p>
+                    <button class="btn booking-btn btn-danger w-100 mb-3 text-white rounded-3 shadow">Reserve ✨</button>
+                    <p class="text-center text-muted small mb-3">You won't be charged yet</p>
 
-                <div id="priceCalculation" class="d-none animate__animated animate__fadeIn">
-                    <div class="d-flex justify-content-between mb-2">
-                        <p class="text-muted mb-0"><span id="perNight">₹<%= listing.price.toLocaleString("en-IN") %></span> x <span id="numNights">0</span> nights</p>
-                        <p class="text-muted mb-0" id="subtotal">₹0</p>
+                    <div id="priceCalculation" class="d-none animate__animated animate__fadeIn">
+                        <div class="d-flex justify-content-between mb-2">
+                            <p class="text-muted mb-0"><span id="perNight">₹<%= listing.price.toLocaleString("en-IN") %></span> x <span id="numNights">0</span> nights</p>
+                            <p class="text-muted mb-0" id="subtotal">₹0</p>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <p class="text-muted mb-0">Wanderlust service fee (5%)</p>
+                            <p class="text-muted mb-0" id="serviceFee">₹0</p>
+                        </div>
+                        <hr class="my-2">
+                        <div class="d-flex justify-content-between">
+                            <p class="fw-bold fs-5 mb-0">Total before taxes</p>
+                            <p class="fw-bold fs-5 mb-0 text-dark" id="totalPriceDisplay">₹0</p>
+                        </div>
                     </div>
-                    <div class="d-flex justify-content-between mb-3">
-                        <p class="text-muted mb-0">Wanderlust service fee (5%)</p>
-                        <p class="text-muted mb-0" id="serviceFee">₹0</p>
-                    </div>
-                    <hr class="my-2">
-                    <div class="d-flex justify-content-between">
-                        <p class="fw-bold fs-5 mb-0">Total before taxes</p>
-                        <p class="fw-bold fs-5 mb-0 text-dark" id="totalPriceDisplay">₹0</p>
-                    </div>
-                </div>
-            </form>
+                </form>
+            <% } %>
             
-            <% if (currUser && currUser._id.equals(listing.owner._id)) { %>
+            <% if (currUser && (currUser._id.equals(listing.owner._id) || currUser.role === 'admin')) { %>
                 <div class="mt-4 pt-4 border-top">
-                    <p class="small text-muted mb-3 fw-bold text-uppercase">Host Property Controls</p>
+                    <p class="small text-muted mb-3 fw-bold text-uppercase">Property Controls</p>
                     <div class="d-flex gap-2">
                         <a href="/listings/<%= listing._id %>/edit" class="btn btn-outline-dark btn-sm flex-fill rounded-3">Edit Property</a>
                         <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE" class="flex-fill">

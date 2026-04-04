@@ -1,0 +1,57 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h5 class="fw-bold mb-4">Post New Event</h5>
+            <form action="/dashboard/admin/events" method="POST" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Event Title</label>
+                    <input type="text" name="event[title]" class="form-control rounded-3" placeholder="e.g. Mumbai Beach Cleanup" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Location</label>
+                    <input type="text" name="event[location]" class="form-control rounded-3" placeholder="e.g. Juhu Beach" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Date & Time</label>
+                    <input type="datetime-local" name="event[date]" class="form-control rounded-3" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Description</label>
+                    <textarea name="event[description]" class="form-control rounded-3" rows="3" placeholder="What's happening?" required></textarea>
+                </div>
+                <button class="btn btn-primary w-100 py-2 fw-bold rounded-3 mt-2 border-0" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);">Add Event</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+            <h5 class="fw-bold mb-4">Upcoming Events</h5>
+            <div class="row g-4">
+                <% if(typeof events !== 'undefined' && events.length > 0) { %>
+                    <% for(let event of events) { %>
+                    <div class="col-md-6">
+                        <div class="card border rounded-4 p-3 h-100 shadow-none overlay-hover">
+                            <h6 class="fw-bold text-dark mb-1"><%= event.title %></h6>
+                            <p class="text-muted small mb-2"><i class="fa-solid fa-location-dot me-1 text-danger"></i> <%= event.location %></p>
+                            <p class="text-muted small mb-3"><i class="fa-solid fa-calendar me-1"></i> <%= new Date(event.date).toLocaleString() %></p>
+                            <p class="card-text small text-dark opacity-75"><%= event.description %></p>
+                            <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
+                                <span class="badge bg-light text-dark border"><%= event.attendees ? event.attendees.length : 0 %> Attendees</span>
+                                <button class="btn btn-sm text-danger border-0"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+                <% } else { %>
+                    <div class="text-center py-5 text-muted w-100">
+                        <i class="fa-solid fa-earth-americas fs-1 mb-3 opacity-25"></i>
+                        <p>No community events posted yet.</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,60 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4">
+    <% Object.keys(groups).forEach(category => { %>
+        <% if(groups[category].length > 0) { %>
+        <div class="col-12 mb-4">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-2 me-3"><i class="fa-solid fa-heart-circle-check fs-5"></i></div>
+                <h5 class="fw-bold mb-0 text-dark"><%= category %></h5>
+            </div>
+            
+            <div class="row g-4">
+                <% groups[category].forEach(item => { %>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 bg-white">
+                        <div class="position-relative overflow-hidden group-hover-zoom">
+                            <img src="<%= item.image.url %>" class="card-img-top" style="height: 180px; object-fit: cover;">
+                            <div class="position-absolute top-0 end-0 m-3 overlay-btn" style="background: rgba(255, 255, 255, 0.9); border-radius: 12px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #e2e8f0; color: #fe424d;" onclick="removeFromWishlist('<%= item._id %>')">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <a href="/listings/<%= item._id %>" class="text-decoration-none text-dark">
+                                <h6 class="fw-bold mb-1 text-truncate"><%= item.title %></h6>
+                                <p class="text-muted small mb-3"><%= item.location %>, <%= item.country %></p>
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <span class="fw-bold fs-5">₹<%= item.price.toLocaleString("en-IN") %> <small class="fw-normal text-muted" style="font-size: 0.6em;">/ night</small></span>
+                                </div>
+                            </a>
+                            <a href="/listings/<%= item._id %>" class="btn btn-dark w-100 rounded-pill fw-bold py-2">Book Stay Now</a>
+                        </div>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+        </div>
+        <% } %>
+    <% }) %>
+
+    <% if(Object.values(groups).every(g => g.length === 0)) { %>
+        <div class="col-12 text-center py-5">
+            <div class="bg-light d-inline-flex p-4 rounded-circle mb-4">
+                <i class="fa-solid fa-heart-circle-plus fs-1 text-muted opacity-50"></i>
+            </div>
+            <h4 class="fw-bold text-muted">Your wishlist is empty!</h4>
+            <p class="text-muted small mb-4">Save properties to organize your dream trips here.</p>
+            <a href="/listings" class="btn btn-primary rounded-pill px-5 py-3 fw-bold border-0" style="background: #fe424d;">Find Properties</a>
+        </div>
+    <% } %>
+</div>
+
+<script>
+    function removeFromWishlist(id) {
+        if(confirm("Remove this property?")) {
+            // Simplified for mockup, in real app, use fetch or form post
+            fetch(`/wishlist/${id}?_method=DELETE`, { method: 'POST' })
+            .then(() => window.location.reload());
+        }
+    }
+</script>

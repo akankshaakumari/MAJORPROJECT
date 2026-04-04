@@ -1,0 +1,150 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-center bg-white h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="bg-primary bg-opacity-10 p-3 rounded-4">
+                    <i class="fa-solid fa-user-group fs-3 text-primary"></i>
+                </div>
+            </div>
+            <h1 class="display-5 fw-bold mb-0 text-start"><%= totalRequests %></h1>
+            <p class="text-muted fw-bold mb-0 text-start small">Total Match Requests</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="bg-success bg-opacity-10 p-3 rounded-4">
+                    <i class="fa-solid fa-link fs-3 text-success"></i>
+                </div>
+            </div>
+            <h1 class="display-5 fw-bold mb-0 text-start"><%= activeMatches %></h1>
+            <p class="text-muted fw-bold mb-0 text-start small">Successful Matches</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="bg-warning bg-opacity-10 p-3 rounded-4">
+                    <i class="fa-solid fa-id-card fs-3 text-warning"></i>
+                </div>
+            </div>
+            <h1 class="display-5 fw-bold mb-0 text-start"><%= pendingVerification %></h1>
+            <p class="text-muted fw-bold mb-0 text-start small">Pending ID Proofs</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Analytics Chart -->
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h5 class="fw-bold mb-4">Top Roommate Destinations</h5>
+            <canvas id="roommateCityChart" style="max-height: 300px;"></canvas>
+        </div>
+    </div>
+
+    <!-- Management Modules -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+            <h5 class="fw-bold mb-4">Management Hub</h5>
+            <div class="d-grid gap-3">
+                <a href="/dashboard/admin/roommates/requests" class="btn btn-light text-start p-3 border-0 rounded-4">
+                    <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-table-list me-3 text-primary fs-5"></i>
+                        <div>
+                            <p class="mb-0 fw-bold">Master Request List</p>
+                            <small class="text-muted">Monitor every request</small>
+                        </div>
+                    </div>
+                </a>
+                <a href="/dashboard/admin/roommates/bookings" class="btn btn-light text-start p-3 border-0 rounded-4">
+                    <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-handshake-angle me-3 text-success fs-5"></i>
+                        <div>
+                            <p class="mb-0 fw-bold">Shared Bookings</p>
+                            <small class="text-muted">Paired check-in monitor</small>
+                        </div>
+                    </div>
+                </a>
+                <a href="/dashboard/admin/roommates/identity" class="btn btn-light text-start p-3 border-0 rounded-4">
+                    <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-user-check me-3 text-warning fs-5"></i>
+                        <div>
+                            <p class="mb-0 fw-bold">ID Verification</p>
+                            <small class="text-muted">Review traveler docs</small>
+                        </div>
+                    </div>
+                </a>
+                <div class="bg-danger bg-opacity-10 text-danger p-3 rounded-4 border border-danger border-opacity-25 animate-pulse">
+                    <div class="d-flex align-items-center mb-1">
+                        <i class="fa-solid fa-triangle-exclamation me-2 fs-5"></i>
+                        <p class="mb-0 fw-bold">SOS Intervention Hub</p>
+                    </div>
+                    <small class="fw-medium">0 active emergency alerts</small>
+                </div>
+                <a href="/dashboard/admin/reports?type=roommate" class="btn btn-light text-start p-3 border-0 rounded-4">
+                    <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-shield-virus me-3 text-danger fs-5"></i>
+                        <div>
+                            <p class="mb-0 fw-bold">Dispute Resolution</p>
+                            <small class="text-muted">Safety investigations</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-2">
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <div class="d-flex align-items-center mb-4">
+                <i class="fa-solid fa-gears fs-4 text-muted me-3"></i>
+                <h5 class="fw-bold mb-0">Platform Matching Configuration</h5>
+            </div>
+            <form class="row g-3 small">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Max Roommates / stay</label>
+                    <input type="number" class="form-control form-control-sm rounded-pill" value="4">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Match Expiry (Hours)</label>
+                    <input type="number" class="form-control form-control-sm rounded-pill" value="48">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Min Profile Completion %</label>
+                    <input type="number" class="form-control form-control-sm rounded-pill" value="60">
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="button" class="btn btn-dark btn-sm w-100 rounded-pill fw-bold">Save System Rules</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const cityCtx = document.getElementById('roommateCityChart').getContext('2d');
+    new Chart(cityCtx, {
+        type: 'doughnut',
+        data: {
+            labels: <%- cityLabels %>,
+            datasets: [{
+                data: <%- cityCounts %>,
+                backgroundColor: [
+                    '#5e60ce', '#4895ef', '#4cc9f0', '#f72585', '#b5179e'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            plugins: { legend: { position: 'right' } },
+            maintainAspectRatio: false
+        }
+    });
+</script>

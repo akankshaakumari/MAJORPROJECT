@@ -1,0 +1,62 @@
+<% if (typeof dashboardType !== 'undefined') { %>
+
+  <% if (dashboardType === 'user') { %>
+      <div class="nav-section">
+          <div class="nav-section-title">Guest Panel</div>
+          <a href="/dashboard/user" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'overview' ? 'active' : '' %>"><i class="fa-solid fa-house-user"></i> Overview</a>
+          <a href="/dashboard/user/bookings" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'bookings' ? 'active' : '' %>"><i class="fa-solid fa-suitcase-rolling"></i> My Bookings</a>
+          <a href="/dashboard/user/wishlist" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'wishlist' ? 'active' : '' %>"><i class="fa-solid fa-heart"></i> Wishlist</a>
+          <a href="/dashboard/user/buddy-requests" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'buddy-requests' ? 'active' : '' %>"><i class="fa-solid fa-user-group"></i> Buddy Requests</a>
+          <a href="/dashboard/user/messages" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'messages' ? 'active' : '' %>"><i class="fa-regular fa-comment-dots"></i> Messages</a>
+          <a href="/dashboard/user/reviews" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'reviews' ? 'active' : '' %>"><i class="fa-solid fa-star"></i> My Reviews</a>
+          <a href="/dashboard/user/profile" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'profile' ? 'active' : '' %>"><i class="fa-solid fa-id-card"></i> Profile Info</a>
+          <a href="/dashboard/user/ai-suggestions" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'ai_suggestions' ? 'active' : '' %>"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Stay Assistant</a>
+          <% if (typeof activeTrip !== 'undefined' && activeTrip) { %>
+             <hr class="mx-3 opacity-10">
+             <div class="nav-section-title">Active Expedition</div>
+             <a href="/dashboard/trip/<%= activeTrip._id %>" class="nav-link"><i class="fa-solid fa-map-location-dot"></i> Trip Dashboard</a>
+          <% } %>
+      </div>
+  <% } %>
+
+  <% if (dashboardType === 'host') { %>
+      <div class="nav-section">
+          <div class="nav-section-title">Host Panel</div>
+          <a href="/dashboard/host" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'overview' ? 'active' : '' %>"><i class="fa-solid fa-chart-pie"></i> Overview</a>
+          <a href="/dashboard/host/properties" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'properties' ? 'active' : '' %>"><i class="fa-solid fa-building"></i> My Properties</a>
+          <a href="/dashboard/host/bookings" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'bookings' ? 'active' : '' %>"><i class="fa-solid fa-calendar-check"></i> Bookings</a>
+          <a href="/dashboard/host/earnings" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'earnings' ? 'active' : '' %>"><i class="fa-solid fa-wallet"></i> Earnings</a>
+          <a href="/dashboard/host/pricing" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'pricing' ? 'active' : '' %>"><i class="fa-solid fa-tags"></i> Pricing Calendar</a>
+          <a href="/dashboard/host/reviews" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'reviews' ? 'active' : '' %>"><i class="fa-solid fa-star-half-stroke"></i> Guest Reviews</a>
+          <a href="/dashboard/host/chat" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'chat' ? 'active' : '' %>"><i class="fa-brands fa-rocketchat"></i> Guest Chat</a>
+      </div>
+  <% } %>
+
+  <% if (dashboardType === 'admin') { %>
+      <div class="nav-section">
+          <div class="nav-section-title">System Administration</div>
+          <a href="/dashboard/admin" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'overview' ? 'active' : '' %>"><i class="fa-solid fa-house-shield"></i> Control Center</a>
+          <a href="/dashboard/admin/users" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'users' ? 'active' : '' %>"><i class="fa-solid fa-user-gear"></i> User Directory</a>
+          <a href="/dashboard/admin/approvals" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'approvals' ? 'active' : '' %>"><i class="fa-solid fa-clipboard-check"></i> Property Approvals</a>
+          <a href="/dashboard/admin/reports" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'reports' ? 'active' : '' %>"><i class="fa-solid fa-triangle-exclamation"></i> Safety Reports</a>
+          <a href="/dashboard/admin/analytics" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'analytics' ? 'active' : '' %>"><i class="fa-solid fa-chart-pie"></i> Business Insights</a>
+          <a href="/dashboard/admin/roommates" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'roommates' ? 'active' : '' %>"><i class="fa-solid fa-people-arrows"></i> Roommate Match Hub</a>
+          <a href="/dashboard/admin/promotions" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'promotions' ? 'active' : '' %>"><i class="fa-solid fa-percent"></i> Growth & Promos</a>
+          <a href="/dashboard/admin/events" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'events' ? 'active' : '' %>"><i class="fa-solid fa-calendar-day"></i> Community Meetups</a>
+      </div>
+  <% } %>
+
+  <% if (dashboardType === 'trip') { %>
+      <div class="nav-section">
+          <div class="nav-section-title">Trip Panel (<%= tripId %>)</div>
+          <a href="/dashboard/trip/<%= tripId %>" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'overview' ? 'active' : '' %>"><i class="fa-solid fa-map-location-dot"></i> Overview</a>
+          <a href="/dashboard/trip/<%= tripId %>/members" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'members' ? 'active' : '' %>"><i class="fa-solid fa-users"></i> Members</a>
+          <a href="/dashboard/trip/<%= tripId %>/planner" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'planner' ? 'active' : '' %>"><i class="fa-solid fa-route"></i> Trip Planner</a>
+          <a href="/dashboard/trip/<%= tripId %>/chat" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'chat' ? 'active' : '' %>"><i class="fa-solid fa-comments"></i> Group Chat</a>
+          <a href="/dashboard/trip/<%= tripId %>/expenses" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'expenses' ? 'active' : '' %>"><i class="fa-solid fa-file-invoice-dollar"></i> Split Expenses</a>
+          <a href="/dashboard/trip/<%= tripId %>/packing" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'packing' ? 'active' : '' %>"><i class="fa-solid fa-suitcase"></i> Packing List</a>
+          <a href="/dashboard/trip/<%= tripId %>/grocery" class="nav-link <%= typeof activePath !== 'undefined' && activePath === 'grocery' ? 'active' : '' %>"><i class="fa-solid fa-basket-shopping"></i> Grocery Plan</a>
+      </div>
+  <% } %>
+
+<% } %>

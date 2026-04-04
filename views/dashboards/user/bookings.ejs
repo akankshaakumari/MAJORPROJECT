@@ -1,0 +1,108 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4">
+    <div class="col-md-12">
+        <ul class="nav nav-pills mb-4 bg-white p-2 rounded-4 shadow-sm d-inline-flex" id="bookingTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active rounded-pill px-4 fw-bold" id="upcoming-tab" data-bs-toggle="pill" data-bs-target="#upcoming" type="button"><i class="fa-solid fa-plane-up me-2 text-primary"></i> Upcoming</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill px-4 fw-bold" id="past-tab" data-bs-toggle="pill" data-bs-target="#past" type="button"><i class="fa-solid fa-history me-2"></i> Past Stays</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill px-4 fw-bold" id="cancelled-tab" data-bs-toggle="pill" data-bs-target="#cancelled" type="button"><i class="fa-solid fa-ban me-2 text-danger"></i> Cancelled</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="bookingTabsContent">
+            <!-- Upcoming Bookings -->
+            <div class="tab-pane fade show active" id="upcoming" role="tabpanel">
+                <div class="row g-4">
+                    <% upcomingBookings.forEach(booking => { %>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 bg-white">
+                            <img src="<%= booking.listing.image.url %>" class="card-img-top" style="height: 180px; object-fit: cover;">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold mb-0 text-truncate" style="max-width: 150px;"><%= booking.listing.title %></h6>
+                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 small">Confirmed</span>
+                                </div>
+                                <p class="text-muted small mb-3"><i class="fa-solid fa-location-dot me-1"></i> <%= booking.listing.location %>, <%= booking.listing.country %></p>
+                                
+                                <div class="bg-light rounded-3 p-3 mb-4">
+                                    <div class="row text-center g-0">
+                                        <div class="col-5">
+                                            <p class="text-muted xsmall mb-0 text-uppercase fw-bold">Check-in</p>
+                                            <p class="fw-bold mb-0 small"><%= booking.checkIn.toLocaleDateString() %></p>
+                                        </div>
+                                        <div class="col-2 d-flex align-items-center justify-content-center text-muted">
+                                            <i class="fa-solid fa-arrow-right"></i>
+                                        </div>
+                                        <div class="col-5">
+                                            <p class="text-muted xsmall mb-0 text-uppercase fw-bold">Check-out</p>
+                                            <p class="fw-bold mb-0 small"><%= booking.checkOut.toLocaleDateString() %></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <a href="#" class="btn btn-outline-dark btn-sm flex-fill rounded-pill py-2"><i class="fa-solid fa-file-invoice me-1"></i> Invoice</a>
+                                    <form action="/dashboard/user/bookings/<%= booking._id %>/cancel" method="POST" class="flex-fill">
+                                        <button class="btn btn-outline-danger btn-sm w-100 rounded-pill py-2" onclick="return confirm('Cancel this booking?')"><i class="fa-solid fa-xmark me-1"></i> Cancel</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+                    <% if(upcomingBookings.length === 0) { %>
+                        <div class="col-12 text-center py-5">
+                            <img src="https://cdni.iconscout.com/illustration/premium/thumb/folder-is-empty-4064360-3363921.png" class="img-fluid mb-4" style="max-width: 250px;">
+                            <h5 class="fw-bold text-muted">No upcoming adventures!</h5>
+                            <a href="/listings" class="text-primary text-decoration-none fw-bold">Explore Listings</a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Past Bookings -->
+            <div class="tab-pane fade" id="past" role="tabpanel">
+                <div class="row g-4">
+                    <% pastBookings.forEach(booking => { %>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 bg-white grayscale">
+                            <img src="<%= booking.listing.image.url %>" class="card-img-top" style="height: 180px; object-fit: cover; opacity: 0.7;">
+                            <div class="card-body p-4">
+                                <h6 class="fw-bold mb-2"><%= booking.listing.title %></h6>
+                                <p class="text-muted small mb-3">Completed on <%= booking.checkOut.toLocaleDateString() %></p>
+                                <a href="/listings/<%= booking.listing._id %>" class="btn btn-light btn-sm w-100 rounded-pill py-2 mb-2"><i class="fa-solid fa-star me-1 text-warning"></i> Write Review</a>
+                                <button class="btn btn-outline-secondary btn-sm w-100 rounded-pill py-2"><i class="fa-solid fa-rotate-left me-1"></i> Re-book Now</button>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
+
+            <!-- Cancelled Bookings -->
+            <div class="tab-pane fade" id="cancelled" role="tabpanel">
+                <div class="row g-4">
+                    <% cancelledBookings.forEach(booking => { %>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white opacity-75">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-2 me-3"><i class="fa-solid fa-ban"></i></div>
+                                <div>
+                                    <h6 class="fw-bold mb-0">Trip Cancelled</h6>
+                                    <small class="text-muted"><%= booking.listing.title %></small>
+                                </div>
+                            </div>
+                            <p class="small text-muted mb-0">Refund processed to original payment method.</p>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

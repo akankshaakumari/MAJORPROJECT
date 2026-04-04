@@ -1,0 +1,89 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-12">
+        <div class="d-flex align-items-center mb-4">
+            <div class="bg-success bg-opacity-10 text-success rounded-circle p-2 me-3"><i class="fa-solid fa-suitcase fs-5"></i></div>
+            <h5 class="fw-bold mb-0">Handy Packing Checklist <span class="badge bg-light text-muted rounded-pill xsmall ms-2"><%= trip.packingList.filter(i => i.isPacked).length %> / <%= trip.packingList.length %> Ready</span></h5>
+        </div>
+        
+        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h6 class="fw-800 text-dark mb-0">Shared Gear & Essentials</h6>
+                <button class="btn btn-outline-dark rounded-pill px-4 fw-bold xsmall border-1 py-2 shadow-none" data-bs-toggle="modal" data-bs-target="#addItemModal"><i class="fa-solid fa-plus me-2"></i> Add Item</button>
+            </div>
+
+            <div class="row g-3">
+                <% if(trip.packingList && trip.packingList.length > 0) { %>
+                    <% trip.packingList.forEach(item => { %>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card border border-light rounded-4 p-3 shadow-none h-100 transition-all hover-border-primary <%= item.isPacked ? 'bg-light bg-opacity-50' : '' %>">
+                                <div class="d-flex align-items-center gap-3">
+                                    <form action="/dashboard/trip/<%= tripId %>/packing/<%= item._id %>/toggle" method="POST" class="m-0">
+                                        <button type="submit" class="border-0 bg-transparent p-0">
+                                            <div class="rounded-circle border-2 border d-flex align-items-center justify-content-center transition-all bg-white" style="width: 24px; height: 24px; border-color: <%= item.isPacked ? '#22c55e' : '#cbd5e1' %> !important; color: <%= item.isPacked ? '#22c55e' : 'transparent' %>;">
+                                                <i class="fa-solid fa-check small"></i>
+                                            </div>
+                                        </button>
+                                    </form>
+                                    <div class="flex-fill">
+                                        <p class="mb-0 small fw-bold <%= item.isPacked ? 'text-decoration-line-through text-muted' : 'text-dark' %>"><%= item.item %></p>
+                                        <div class="d-flex align-items-center mt-1">
+                                            <div class="bg-indigo text-white rounded-circle me-2 d-flex align-items-center justify-content-center xsmall fw-800" style="width: 18px; height: 18px; background: #6366f1; font-size: 0.5rem;"><%= item.assignedTo.username.charAt(0).toUpperCase() %></div>
+                                            <span class="xsmall text-muted fw-bold">Carry by <%= item.assignedTo.username %></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="col-12">
+                        <div class="py-5 text-center border border-dashed rounded-4">
+                             <i class="fa-solid fa-clipboard-list fs-1 text-muted opacity-10 mb-3"></i>
+                             <p class="text-muted small">Packing light? Add some essentials to get started.</p>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Item Modal -->
+<div class="modal fade" id="addItemModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+            <div class="p-4 border-bottom bg-light bg-opacity-50 text-center">
+                <h5 class="fw-bold mb-0">Add Essential Gear</h5>
+            </div>
+            <form action="/dashboard/trip/<%= tripId %>/packing/add" method="POST">
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold xsmall text-muted">ITEM NAME</label>
+                            <input type="text" name="item" class="form-control rounded-pill py-3 px-4 shadow-none bg-light bg-opacity-50 xsmall" placeholder="Power Bank, First Aid, etc." required>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold xsmall text-muted">ASSIGN TO (Optional)</label>
+                            <select name="assignedTo" class="form-select rounded-pill py-3 px-4 shadow-none bg-light bg-opacity-50 xsmall border-0 h-100">
+                                <% trip.members.forEach(m => { %>
+                                    <option value="<%= m.user._id %>"><%= m.user.username %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 border-top d-flex gap-2">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-bold flex-fill py-2" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-dark rounded-pill px-4 fw-bold flex-fill py-2">Add Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-border-primary:hover { border-color: #6366f1 !important; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+    .transition-all { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+</style>

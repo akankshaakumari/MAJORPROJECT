@@ -1,0 +1,77 @@
+<% layout("layouts/dashboard") %>
+
+<div class="row g-4">
+    <!-- Waiting Requests -->
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex align-items-center">
+                <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-2 me-3"><i class="fa-solid fa-hourglass-start fs-5"></i></div>
+                <h5 class="fw-bold mb-0">Active Search (Waiting)</h5>
+            </div>
+            <a href="/roommates/new" class="btn btn-primary rounded-pill px-4 fw-bold border-0 shadow-sm" style="background: linear-gradient(135deg, #FF385C 0%, #BD1E59 100%);"><i class="fa-solid fa-plus me-2"></i> New Request</a>
+        </div>
+        
+        <div class="row g-4 mb-5">
+            <% waiting.forEach(req => { %>
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 position-relative overflow-hidden">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="bg-light rounded-pill px-3 py-1 xsmall fw-bold text-muted"><i class="fa-solid fa-location-dot me-1"></i> <%= req.city %></div>
+                        <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill xsmall">Searching</span>
+                    </div>
+                    <h6 class="fw-bold mb-3"><%= req.startDate.toLocaleDateString() %> - <%= req.endDate.toLocaleDateString() %></h6>
+                    <p class="text-muted small mb-4 text-truncate-2" style="height: 40px;"><%= req.bio %></p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="fw-bold text-primary small">Budget: ₹<%= req.budget.toLocaleString("en-IN") %></span>
+                        <div class="d-flex gap-2">
+                           <a href="/roommates/<%= req._id %>/edit" class="btn btn-light btn-sm rounded-circle shadow-none border" style="width: 32px; height: 32px;"><i class="fa-solid fa-pen fa-xs"></i></a>
+                           <form action="/roommates/<%= req._id %>?_method=DELETE" method="POST" class="d-inline">
+                               <button class="btn btn-light btn-sm rounded-circle shadow-none border text-danger" style="width: 32px; height: 32px;" onclick="return confirm('Delete this request?')"><i class="fa-solid fa-trash-can fa-xs"></i></button>
+                           </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+            <% if(waiting.length === 0) { %>
+                <div class="col-12">
+                    <div class="card border-2 border-dashed rounded-4 p-5 text-center bg-transparent">
+                        <i class="fa-solid fa-people-arrows fs-1 text-muted opacity-25 mb-3"></i>
+                        <h6 class="fw-bold text-muted mb-0">No active searches. Start one now!</h6>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Matched Requests -->
+    <div class="col-md-12 mt-4">
+        <div class="d-flex align-items-center mb-4">
+            <div class="bg-success bg-opacity-10 text-success rounded-circle p-2 me-3"><i class="fa-solid fa-square-check fs-5"></i></div>
+            <h5 class="fw-bold mb-0">Successful Matches</h5>
+        </div>
+        
+        <div class="row g-4">
+            <% matched.forEach(match => { %>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+                    <div class="d-flex align-items-center">
+                        <div class="position-relative me-4">
+                            <div class="bg-primary rounded-circle" style="width: 48px; height: 48px;"></div>
+                            <div class="bg-success rounded-circle position-absolute bottom-0 end-0 border border-white" style="width: 14px; height: 14px;"></div>
+                        </div>
+                        <div class="flex-fill">
+                            <h6 class="fw-bold mb-1">Matched in <%= match.city %>! 🎉</h6>
+                            <p class="text-muted small mb-0">Shared trip for <%= match.startDate.toLocaleDateString() %></p>
+                        </div>
+                        <a href="/dashboard/user/messages" class="btn btn-dark btn-sm rounded-pill px-4 fw-bold py-2">Message Now</a>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+            <% if(matched.length === 0) { %>
+                <p class="text-center text-muted py-4">No matches found yet. Keep searching!</p>
+            <% } %>
+        </div>
+    </div>
+</div>
