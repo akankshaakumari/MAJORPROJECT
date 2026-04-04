@@ -67,6 +67,7 @@ module.exports.renderForgotPasswordForm = (req, res) => {
 module.exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
+    
     if (!user) {
         req.flash("error", "No account with that email address exists.");
         return res.redirect("/forgot-password");
@@ -78,10 +79,21 @@ module.exports.forgotPassword = async (req, res) => {
     user.resetPasswordExpires = Date.now() + 600000; // 10 minutes
     await user.save();
 
-    // Send Email
+    // FALLBACK: If no email credentials, skip sending and show test OTP hint
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        console.warn("⚠️ [AUTH] EMAIL_USER or EMAIL_PASS missing. Using test OTP: 111111");
+        user.resetPasswordOTP = "111111"; // Override with easy code for testing
+        await user.save();
+        req.flash("success", "Developer Mode: Use 111111 as your verification code.");
+        return res.redirect("/verify-otp?email=" + email);
+    }
+
+    // Send Real Email with Timeout
     const nodemailer = require("nodemailer");
     const transporter = nodemailer.createTransport({
         service: "gmail",
+        connectionTimeout: 10000, // 10 seconds
+        greetingTimeout: 10000,
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS
@@ -91,32 +103,29 @@ module.exports.forgotPassword = async (req, res) => {
     const mailOptions = {
         from: `"WanderLust Support" <${process.env.EMAIL_USER}>`,
         to: user.email,
-        subject: "Your WanderLust Password Reset OTP",
+        subject: "WanderLust Password Reset OTP",
         html: `
-            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e1e8ed; border-radius: 12px;">
-                <h2 style="color: #fe424d; text-align: center;">WanderLust OTP Verification</h2>
-                <p>Hello <strong>${user.username}</strong>,</p>
-                <p>You requested to reset your password. Use the code below to proceed with your reset. This code is valid for 10 minutes.</p>
-                <div style="background: #f8f9fa; padding: 20px; text-align: center; font-size: 32px; font-weight: 800; letter-spacing: 5px; color: #1e293b; border-radius: 8px; margin: 20px 0;">
+            <div style="font-family: sans-serif; max-width: 500px; margin: auto; padding: 25px; border: 1px solid #f0f0f0; border-radius: 12px; text-align: center;">
+                <h2 style="color: #fe424d;">Verification Code</h2>
+                <p>Hello <strong>${user.username}</strong>, your request to reset your password is approved.</p>
+                <div style="background: #f8f9fa; padding: 20px; font-size: 32px; font-weight: 800; letter-spacing: 5px; color: #fe424d; border-radius: 8px; margin: 25px 0;">
                     ${otp}
                 </div>
-                <p style="color: #64748b; font-size: 14px;">If you did not request this, please ignore this email or contact support if you have concerns.</p>
-                <hr style="border: 0; border-top: 1px solid #e1e8ed; margin: 20px 0;">
-                <p style="text-align: center; color: #fe424d; font-weight: bold;">Safe Travels, <br> The WanderLust Team</p>
+                <p style="color: #6c757d; font-size: 13px;">Valid for 10 minutes. If you didn't request this, ignore this email.</p>
             </div>
         `
     };
 
     try {
         await transporter.sendMail(mailOptions);
-        req.flash("success", "OTP sent to your email!");
+        req.flash("success", "A secure code has been sent to your inbox.");
         res.redirect("/verify-otp?email=" + email);
     } catch (err) {
-        console.error("EMAIL ERROR:", err);
-        req.flash("error", "Error sending email. Use 111111 for testing if EMAIL_USER is not set.");
-        // Fallback for demo/testing without real SMTP
+        console.error("❌ [MAIL ERROR]:", err.message);
+        // Robust Fallback: Let user use a fixed code so they aren't stuck
         user.resetPasswordOTP = "111111";
         await user.save();
+        req.flash("error", "Email service is taking too long. Using emergency code: 111111");
         res.redirect("/verify-otp?email=" + email);
     }
 };
